@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "535003008646",
+    "firebase_url": "https://ar-gunman.firebaseio.com",
+    "project_id": "ar-gunman",
+    "storage_bucket": "ar-gunman.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:535003008646:android:377fda9b728e7463b44b07",
+        "android_client_info": {
+          "package_name": "com.takamasafukase.ar_gunman_android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "535003008646-q49tvjaj3pui11ff7abbuckv9tdb9gv0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrHU8x2YFx21KcHxWuB1hb17PRMlZIcho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "535003008646-q49tvjaj3pui11ff7abbuckv9tdb9gv0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "535003008646-a1c4uvsfkr7csohadvd37ha8g48qjsb6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.takamasafuksae.AR-GunMan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
