@@ -28,4 +28,19 @@ class MainViewModel {
                 println("error: $error")
             }
     }
+
+    fun getDummyRankings() {
+        _state.value = _state.value.copy(rankings = listOf(
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+            Ranking(score = 98.765, user_name = "なまえ"),
+        ))
+    }
 }

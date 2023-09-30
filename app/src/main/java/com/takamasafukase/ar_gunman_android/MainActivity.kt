@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = MainViewModel()
-        viewModel.getRankings()
+        viewModel.getDummyRankings()
 
         setContent {
 
@@ -42,34 +43,14 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(viewModel: MainViewModel) {
     val state by viewModel.state.collectAsState()
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(text = "Has pulsado ${state.count} vezes.")
-        Button(onClick = {
-            viewModel.onTapIncrementButton()
-        }) {
-            Text(text = "Pulsa me para contar")
-        }
-        RankingListView(list = state.rankings)
-    }
+    RankingListView(list = state.rankings)
 }
 
 @Composable
 fun RankingListView(list: List<Ranking>) {
     LazyColumn {
-        items(list) { ranking ->
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(text = ranking.user_name)
-                Text(text = ranking.score.toString())
-            }
-            Spacer(modifier = Modifier.fillMaxSize())
+        itemsIndexed(list) { index, ranking ->
+            RankingItem(rankIndex = index + 1, ranking = ranking)
         }
     }
 }
