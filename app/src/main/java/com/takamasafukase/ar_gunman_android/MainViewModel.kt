@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android
 
+import android.app.DownloadManager.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -18,7 +19,7 @@ class MainViewModel {
 
     fun getRankings() {
         db.collection("worldRanking")
-            .orderBy("score")
+            .orderBy("score", com.google.firebase.firestore.Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { documents ->
                 val rankings = documents.toObjects(Ranking::class.java)
