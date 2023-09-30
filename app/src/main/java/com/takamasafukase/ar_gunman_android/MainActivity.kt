@@ -16,20 +16,15 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
 import com.takamasafukase.ar_gunman_android.ui.theme.ARGunManAndroidTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel = MainViewModel()
+        viewModel.getRankings()
 
         setContent {
-            val rankings = rememberRankings()
 
             ARGunManAndroidTheme {
                 // A surface container using the 'background' color from the theme
@@ -37,8 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-//                    MainScreen(viewModel = viewModel)
-                    RankingListView(rankings)
+                    MainScreen(viewModel = viewModel)
                 }
             }
         }
@@ -59,6 +53,7 @@ fun MainScreen(viewModel: MainViewModel) {
         }) {
             Text(text = "Pulsa me para contar")
         }
+        RankingListView(list = state.rankings)
     }
 }
 
@@ -77,41 +72,4 @@ fun RankingListView(list: List<Ranking>) {
             Spacer(modifier = Modifier.fillMaxSize())
         }
     }
-}
-
-@Composable
-fun rememberRankings(): List<Ranking> {
-    val rankings = remember { mutableStateListOf<Ranking>() }
-
-    DisposableEffect(Unit) {
-        val registration = Firebase.firestore
-            .collection("worldRanking")
-            .orderBy("score")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null || snapshot == null) {
-                    println("error: $error")
-                    return@addSnapshotListener
-                }
-                for (doc in snapshot.documentChanges) {
-                    val ranking = doc.document.toObject(Ranking::class.java)
-                    when (doc.type) {
-                        DocumentChange.Type.ADDED -> {
-                            rankings.add(ranking)
-                        }
-                        DocumentChange.Type.MODIFIED -> {
-                            val index = rankings.indexOfFirst { it.id == ranking.id }
-                            rankings[index] = ranking
-                        }
-                        DocumentChange.Type.REMOVED -> {
-                            rankings.removeIf { it.id == ranking.id }
-                        }
-                    }
-                }
-            }
-        onDispose {
-            registration.remove()
-        }
-    }
-
-    return rankings.toList()
 }
