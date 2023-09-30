@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blackSteel">#FF070805</color>
+    <color name="paper">#FFEAEAEA</color>
+    <color name="goldLeaf">#FFC4A36D</color>
+    <color name="silver">#FF443C36</color>
+    <color name="customBrown1">#FF554E48</color>
+    <color name="customBrown2">#FF6E665E</color>
 </resources>
