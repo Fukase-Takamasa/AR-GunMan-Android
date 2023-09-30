@@ -1,10 +1,12 @@
 package com.takamasafukase.ar_gunman_android
 
+import android.os.Looper
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import  com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import android.os.Handler
 
 class MainViewModel {
     private val _state = MutableStateFlow(MainViewState(count = 0, listOf()))
@@ -30,7 +32,7 @@ class MainViewModel {
     }
 
     fun getDummyRankings() {
-        _state.value = _state.value.copy(rankings = listOf(
+        val list = listOf(
             Ranking(score = 98.765, user_name = "なまえ"),
             Ranking(score = 98.765, user_name = "なまえ"),
             Ranking(score = 98.765, user_name = "なまえ"),
@@ -41,6 +43,9 @@ class MainViewModel {
             Ranking(score = 98.765, user_name = "なまえ"),
             Ranking(score = 98.765, user_name = "なまえ"),
             Ranking(score = 98.765, user_name = "なまえ"),
-        ))
+        )
+        Handler(Looper.getMainLooper()).postDelayed({
+            _state.value = _state.value.copy(rankings = list)
+        }, 1000)
     }
 }
