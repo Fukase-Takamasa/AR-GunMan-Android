@@ -27,7 +27,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ARGunManAndroidTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = colorResource(id = R.color.blackSteel)
@@ -54,9 +53,7 @@ fun MainScreen(viewModel: MainViewModel) {
                     height = Dp((screenHeight * 0.8).toFloat())
                 )
         ) {
-            RankingListView(
-                list = state.rankings
-            )
+            RankingListView(list = state.rankings)
         }
     }
 }
@@ -74,7 +71,10 @@ fun RankingListView(list: List<Ranking>) {
     } else {
         LazyColumn {
             itemsIndexed(list) { index, ranking ->
-                RankingItem(rankIndex = index + 1, ranking = ranking)
+                RankingItem(
+                    rankIndex = index + 1,
+                    ranking = ranking
+                )
             }
         }
     }

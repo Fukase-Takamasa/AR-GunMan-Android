@@ -9,14 +9,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import android.os.Handler
 
 class MainViewModel {
-    private val _state = MutableStateFlow(MainViewState(count = 0, listOf()))
+    private val _state = MutableStateFlow(MainViewState(listOf()))
     val state = _state.asStateFlow()
 
     private val db = Firebase.firestore
 
-    fun onTapIncrementButton() {
-        _state.value = _state.value.copy(count = _state.value.count + 1)
-    }
 
     fun getRankings() {
         db.collection("worldRanking")
