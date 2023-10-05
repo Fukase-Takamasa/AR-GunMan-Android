@@ -3,8 +3,8 @@ package com.takamasafukase.ar_gunman_android
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class MainViewModel {
-    private val _state = MutableStateFlow(MainViewState(listOf()))
+class RankingViewModel {
+    private val _state = MutableStateFlow(RankingViewState(listOf()))
     val state = _state.asStateFlow()
     private val rankingRepository = RankingRepository()
 

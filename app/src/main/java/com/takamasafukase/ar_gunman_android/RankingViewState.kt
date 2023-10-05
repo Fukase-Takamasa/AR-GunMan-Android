@@ -1,5 +1,5 @@
 package com.takamasafukase.ar_gunman_android
 
-data class MainViewState(
+data class RankingViewState(
     val rankings: List<Ranking>,
 )
