@@ -44,7 +44,7 @@ fun MyApp() {
                 modifier = Modifier.fillMaxSize(),
                 color = colorResource(id = R.color.goldLeaf)
             ) {
-                MainScreen(
+                TopScreen(
                     toGame = {
 //                        navController.navigate("game")
                      },

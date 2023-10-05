@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MainScreen(
+fun TopScreen(
     toGame: () -> Unit,
     toRanking: () -> Unit,
     toTutorial: () -> Unit,
