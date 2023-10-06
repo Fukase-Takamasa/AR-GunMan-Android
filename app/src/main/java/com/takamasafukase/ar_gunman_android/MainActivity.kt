@@ -29,46 +29,49 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
 
-@Composable
-fun MyApp() {
-    val navController = rememberNavController()
+    @Composable
+    fun MyApp() {
+        val navController = rememberNavController()
 
-    NavHost(
-        navController = navController,
-        startDestination = "top",
-    ) {
-        composable("top") {
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = colorResource(id = R.color.goldLeaf)
-            ) {
-                TopScreen(
-                    toGame = {
+        NavHost(
+            navController = navController,
+            startDestination = "top",
+        ) {
+            composable("top") {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = colorResource(id = R.color.goldLeaf)
+                ) {
+                    TopScreen(
+                        toSetting = {
+
+                        },
+                        toGame = {
 //                        navController.navigate("game")
-                     },
-                    toRanking = {
-                        navController.navigate("ranking")
-                    },
-                    toTutorial = {
+                        },
+                        toRanking = {
+                            navController.navigate("ranking")
+                        },
+                        toTutorial = {
 //                        navController.navigate("tutorial")
-                    }
-                )
+                        }
+                    )
+                }
             }
-        }
-        composable("ranking") {
-            val viewModel = RankingViewModel()
-            Surface(
-                modifier = Modifier.fillMaxSize(),
-                color = Color.Black.copy(alpha = 0.8f)
-            ) {
-                RankingScreen(
-                    viewModel = viewModel,
-                    onClose = {
-                        navController.popBackStack()
-                    }
-                )
+            composable("ranking") {
+                val viewModel = RankingViewModel()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color.Black.copy(alpha = 0.8f)
+                ) {
+                    RankingScreen(
+                        viewModel = viewModel,
+                        onClose = {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             }
         }
     }

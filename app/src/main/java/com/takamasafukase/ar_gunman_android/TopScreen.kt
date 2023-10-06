@@ -1,6 +1,7 @@
 package com.takamasafukase.ar_gunman_android
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -12,25 +13,33 @@ fun TopScreen(
     toGame: () -> Unit,
     toRanking: () -> Unit,
     toTutorial: () -> Unit,
+    toSetting: () -> Unit,
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Column() {
         TextButton(onClick = {
-            toGame()
+            toSetting()
         }) {
-            Text("Game")
+            Text("Settings")
         }
-        TextButton(onClick = {
-            toRanking()
-        }) {
-            Text("Ranking")
-        }
-        TextButton(onClick = {
-            toTutorial()
-        }) {
-            Text("HowToPlay")
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            TextButton(onClick = {
+                toGame()
+            }) {
+                Text("Start")
+            }
+            TextButton(onClick = {
+                toRanking()
+            }) {
+                Text("Ranking")
+            }
+            TextButton(onClick = {
+                toTutorial()
+            }) {
+                Text("HowToPlay")
+            }
         }
     }
 }
