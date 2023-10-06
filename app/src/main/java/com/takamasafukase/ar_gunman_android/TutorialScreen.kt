@@ -9,8 +9,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TutorialScreen(
-    toDeveloperContact: () -> Unit,
-    toPrivacyPolicy: () -> Unit,
+    onClose: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -18,7 +17,7 @@ fun TutorialScreen(
     ) {
         Text("Tutorial")
         TextButton(onClick = {
-            toPrivacyPolicy()
+            onClose()
         }) {
             Text("戻る")
         }

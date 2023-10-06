@@ -8,18 +8,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun GameScreen(
-    onClose: () -> Unit,
+fun ResultScreen(
+    onReplay: () -> Unit,
+    toHome: () -> Unit,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Text("Game")
+        Text("Result")
         TextButton(onClick = {
-            onClose()
+            onReplay()
         }) {
-            Text("戻る")
+            Text("REPLAY")
+        }
+        TextButton(onClick = {
+            toHome()
+        }) {
+            Text("HOME")
         }
     }
 }

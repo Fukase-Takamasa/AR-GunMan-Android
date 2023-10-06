@@ -39,39 +39,69 @@ class MainActivity : ComponentActivity() {
             startDestination = "top",
         ) {
             composable("top") {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = colorResource(id = R.color.goldLeaf)
-                ) {
-                    TopScreen(
-                        toSetting = {
-
-                        },
-                        toGame = {
-//                        navController.navigate("game")
-                        },
-                        toRanking = {
-                            navController.navigate("ranking")
-                        },
-                        toTutorial = {
+                TopScreen(
+                    toSetting = {
+                        navController.navigate("setting")
+                    },
+                    toGame = {
+                        navController.navigate("game")
+                    },
+                    toRanking = {
+//                        navController.navigate("ranking")
+                        // TODO ダイアログに変える
+                    },
+                    toTutorial = {
 //                        navController.navigate("tutorial")
-                        }
-                    )
-                }
+                        // TODO ダイアログに変える
+                    }
+                )
             }
-            composable("ranking") {
-                val viewModel = RankingViewModel()
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.Black.copy(alpha = 0.8f)
-                ) {
-                    RankingScreen(
-                        viewModel = viewModel,
-                        onClose = {
-                            navController.popBackStack()
-                        }
-                    )
-                }
+            composable("setting") {
+                SettingScreen(
+                    toDeveloperContact = {
+                        // TODO: WebViewの表示
+                    },
+                    toPrivacyPolicy = {
+                        // TODO: WebViewの表示
+                    },
+                    onClose = {
+                        navController.navigate("top")
+                    }
+                )
+            }
+            composable("game") {
+                GameScreen(
+                    onClose = {
+                        navController.navigate("top")
+                    }
+                    //todo closeではなくResultに変える
+                )
+            }
+//            composable("ranking") {
+//                val viewModel = RankingViewModel()
+//                RankingScreen(
+//                    viewModel = viewModel,
+//                    onClose = {
+//
+//                    }
+//                )
+//            }
+//            composable("tutorial") {
+//                TutorialScreen(
+//                    onClose = {
+//
+//                    }
+//                )
+//            }
+            composable("result") {
+                ResultScreen(
+                    onReplay = {
+                        navController.navigate("game")
+                    },
+                    toHome = {
+                        navController.navigate("top")
+                    }
+                )
             }
         }
     }
