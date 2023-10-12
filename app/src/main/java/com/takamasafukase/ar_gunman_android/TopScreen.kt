@@ -6,17 +6,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 
 @Composable
 fun TopScreen(
-    toGame: () -> Unit,
-    toRanking: () -> Unit,
-    toTutorial: () -> Unit,
     toSetting: () -> Unit,
+    toGame: () -> Unit,
 ) {
+    var isShowRankingDialog by remember { mutableStateOf(false) }
+    var isShowTutorialDialog by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = colorResource(id = R.color.goldLeaf)
@@ -37,16 +38,35 @@ fun TopScreen(
                     Text("Start")
                 }
                 TextButton(onClick = {
-                    toRanking()
+//                    toRanking()
+                    isShowRankingDialog = true
                 }) {
                     Text("Ranking")
                 }
                 TextButton(onClick = {
-                    toTutorial()
+                    isShowTutorialDialog = true
                 }) {
                     Text("HowToPlay")
                 }
             }
+        }
+
+        if (isShowRankingDialog) {
+            val viewModel = RankingViewModel()
+            RankingScreen(
+                viewModel = viewModel,
+                onClose = {
+                    isShowRankingDialog = false
+                }
+            )
+        }
+
+        if (isShowTutorialDialog) {
+            TutorialScreen(
+                onClose = {
+                    isShowTutorialDialog = false
+                }
+            )
         }
     }
 }

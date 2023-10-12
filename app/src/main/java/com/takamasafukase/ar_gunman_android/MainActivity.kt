@@ -46,14 +46,6 @@ class MainActivity : ComponentActivity() {
                     toGame = {
                         navController.navigate("game")
                     },
-                    toRanking = {
-//                        navController.navigate("ranking")
-                        // TODO ダイアログに変える
-                    },
-                    toTutorial = {
-//                        navController.navigate("tutorial")
-                        // TODO ダイアログに変える
-                    }
                 )
             }
             composable("setting") {

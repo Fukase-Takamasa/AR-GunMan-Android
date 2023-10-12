@@ -18,11 +18,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDirection.Companion.Content
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 
 @Composable
 fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
@@ -30,42 +29,50 @@ fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
 
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color.Black.copy(alpha = 0.8f)
-    ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(
-                        width = Dp((screenWidth * 0.6).toFloat()),
-                        height = Dp((screenHeight * 0.8).toFloat())
-                    )
+    CustomDialog(
+        onDismissRequest = onClose,
+        size = DpSize(
+            width = Dp((screenWidth * 0.6).toFloat()),
+            height = Dp((screenHeight * 0.8).toFloat())
+        ),
+        content = {
+            Surface(
+                color = Color.Transparent
             ) {
-                BackgroundBorderView()
-                Column(
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                        .fillMaxSize()
                 ) {
-                    TitleView(onClose)
-                    RankingListView(list = state.rankings)
-                }
-                if (state.rankings.isEmpty()) {
                     Box(
-                        contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .fillMaxSize()
+                            .size(
+                                width = Dp((screenWidth * 0.6).toFloat()),
+                                height = Dp((screenHeight * 0.8).toFloat())
+                            )
                     ) {
-                        CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                        BackgroundBorderView()
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                        ) {
+                            TitleView(onClose)
+                            RankingListView(list = state.rankings)
+                        }
+                        if (state.rankings.isEmpty()) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                            }
+                        }
                     }
                 }
             }
         }
-    }
+    )
 }
 
 // リストビューの上のビュー
