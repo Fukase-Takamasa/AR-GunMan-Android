@@ -11,7 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun TopScreen(
@@ -30,9 +35,25 @@ fun TopScreen(
                 TextButton(onClick = {
                     toSetting()
                 }) {
-                    Text("Settings")
+                    Text(
+                        text = "Settings",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        style = TextStyle(textDecoration = TextDecoration.Underline),
+                    )
                 }
-                Text("AR-GunMan")
+                Row() {
+                    Text(
+                        text = "AR",
+                        fontSize = 100.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = "-GunMan",
+                        fontSize = 80.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
             }
             Row() {
                 Column(
@@ -41,18 +62,33 @@ fun TopScreen(
                     TextButton(onClick = {
                         toGame()
                     }) {
-                        Text("Start")
+                        Text(
+                            text = "Start",
+                            fontSize = 50.sp,
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(textDecoration = TextDecoration.Underline),
+                        )
                     }
                     TextButton(onClick = {
 //                    toRanking()
                         isShowRankingDialog = true
                     }) {
-                        Text("Ranking")
+                        Text(
+                            text = "Ranking",
+                            fontSize = 50.sp,
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(textDecoration = TextDecoration.Underline),
+                        )
                     }
                     TextButton(onClick = {
                         isShowTutorialDialog = true
                     }) {
-                        Text("HowToPlay")
+                        Text(
+                            text = "HowToPlay",
+                            fontSize = 50.sp,
+                            fontWeight = FontWeight.Bold,
+                            style = TextStyle(textDecoration = TextDecoration.Underline),
+                        )
                     }
                 }
                 Image(
