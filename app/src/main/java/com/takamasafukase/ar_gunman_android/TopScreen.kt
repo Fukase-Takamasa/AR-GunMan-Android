@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -26,41 +27,55 @@ fun TopScreen(
 ) {
     var isShowRankingDialog by remember { mutableStateOf(false) }
     var isShowTutorialDialog by remember { mutableStateOf(false) }
+    val screenHeight = LocalConfiguration.current.screenHeightDp
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = colorResource(id = R.color.goldLeaf)
     ) {
-        Column {
-            Row {
-                SettingButton(onTap = {
-                    toSetting()
-                })
-                TitleText()
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 60.dp)
+//                .padding(40.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                SettingButton(
+                    screenHeight = screenHeight,
+                    onTap = {
+                        toSetting()
+                    })
+                Spacer(modifier = Modifier.weight(1f))
+                TitleText(screenHeight = screenHeight)
             }
             Row {
                 Column(
                     modifier = Modifier
                 ) {
                     CustomIconButton(
+                        screenHeight = screenHeight,
                         title = "Start",
                         onTap = {
                             toGame()
                         }
                     )
                     CustomIconButton(
+                        screenHeight = screenHeight,
                         title = "Ranking",
                         onTap = {
                             isShowRankingDialog = true
                         }
                     )
                     CustomIconButton(
+                        screenHeight = screenHeight,
                         title = "HowToPlay",
                         onTap = {
                             isShowTutorialDialog = true
                         }
                     )
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 PistolImage()
             }
         }
@@ -88,18 +103,20 @@ fun TopScreen(
 }
 
 @Composable
-fun TitleText() {
+fun TitleText(screenHeight: Int) {
     Row(
         verticalAlignment = Alignment.Bottom
     ) {
         Text(
             text = "AR",
-            fontSize = 100.sp,
+//            fontSize = 100.sp,
+            fontSize = (screenHeight * 0.2).sp,
             fontWeight = FontWeight.Bold,
         )
         Text(
             text = "-GunMan",
-            fontSize = 80.sp,
+//            fontSize = 80.sp,
+            fontSize = (screenHeight * 0.16).sp,
             fontWeight = FontWeight.Bold,
         )
     }
@@ -107,6 +124,7 @@ fun TitleText() {
 
 @Composable
 fun SettingButton(
+    screenHeight: Int,
     onTap: () -> Unit,
 ) {
     TextButton(onClick = {
@@ -114,7 +132,8 @@ fun SettingButton(
     }) {
         Text(
             text = "Settings",
-            fontSize = 28.sp,
+//            fontSize = 28.sp,
+            fontSize = (screenHeight * 0.056).sp,
             fontWeight = FontWeight.Bold,
             style = TextStyle(textDecoration = TextDecoration.Underline),
             color = colorResource(id = R.color.blackSteel)
@@ -124,6 +143,7 @@ fun SettingButton(
 
 @Composable
 fun CustomIconButton(
+    screenHeight: Int,
     title: String,
     onTap: () -> Unit,
 //    icon: 
@@ -133,7 +153,8 @@ fun CustomIconButton(
     }) {
         Text(
             text = title,
-            fontSize = 50.sp,
+//            fontSize = 50.sp,
+            fontSize = (screenHeight * 0.1).sp,
             fontWeight = FontWeight.Bold,
             style = TextStyle(textDecoration = TextDecoration.Underline),
             color = colorResource(id = R.color.blackSteel)
