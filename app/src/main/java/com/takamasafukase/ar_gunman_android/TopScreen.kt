@@ -7,6 +7,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
@@ -31,72 +32,36 @@ fun TopScreen(
         color = colorResource(id = R.color.goldLeaf)
     ) {
         Column {
-            Row() {
-                TextButton(onClick = {
+            Row {
+                SettingButton(onTap = {
                     toSetting()
-                }) {
-                    Text(
-                        text = "Settings",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.Bold,
-                        style = TextStyle(textDecoration = TextDecoration.Underline),
-                    )
-                }
-                Row() {
-                    Text(
-                        text = "AR",
-                        fontSize = 100.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Text(
-                        text = "-GunMan",
-                        fontSize = 80.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                }
+                })
+                TitleText()
             }
-            Row() {
+            Row {
                 Column(
                     modifier = Modifier
                 ) {
-                    TextButton(onClick = {
-                        toGame()
-                    }) {
-                        Text(
-                            text = "Start",
-                            fontSize = 50.sp,
-                            fontWeight = FontWeight.Bold,
-                            style = TextStyle(textDecoration = TextDecoration.Underline),
-                        )
-                    }
-                    TextButton(onClick = {
-//                    toRanking()
-                        isShowRankingDialog = true
-                    }) {
-                        Text(
-                            text = "Ranking",
-                            fontSize = 50.sp,
-                            fontWeight = FontWeight.Bold,
-                            style = TextStyle(textDecoration = TextDecoration.Underline),
-                        )
-                    }
-                    TextButton(onClick = {
-                        isShowTutorialDialog = true
-                    }) {
-                        Text(
-                            text = "HowToPlay",
-                            fontSize = 50.sp,
-                            fontWeight = FontWeight.Bold,
-                            style = TextStyle(textDecoration = TextDecoration.Underline),
-                        )
-                    }
+                    CustomIconButton(
+                        title = "Start",
+                        onTap = {
+                            toGame()
+                        }
+                    )
+                    CustomIconButton(
+                        title = "Ranking",
+                        onTap = {
+                            isShowRankingDialog = true
+                        }
+                    )
+                    CustomIconButton(
+                        title = "HowToPlay",
+                        onTap = {
+                            isShowTutorialDialog = true
+                        }
+                    )
                 }
-                Image(
-                    painter = painterResource(id = R.drawable.top_page_gun_icon),
-                    contentDescription = "Automatic Pistol Icon",
-                    modifier = Modifier
-                        .size(width = 300.dp, height = 200.dp)
-                )
+                PistolImage()
             }
         }
 
@@ -122,20 +87,66 @@ fun TopScreen(
     }
 }
 
-//@Composable
-//fun TitleText() {
-//
-//}
-//
-//@Composable
-//fun CustomIconButton(
-//    onTap: () -> Unit,
-//    icon:
-//) {
-//
-//}
-//
-//@Composable
-//fun PistolImage() {
-//
-//}
+@Composable
+fun TitleText() {
+    Row(
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Text(
+            text = "AR",
+            fontSize = 100.sp,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = "-GunMan",
+            fontSize = 80.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+fun SettingButton(
+    onTap: () -> Unit,
+) {
+    TextButton(onClick = {
+        onTap()
+    }) {
+        Text(
+            text = "Settings",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(textDecoration = TextDecoration.Underline),
+            color = colorResource(id = R.color.blackSteel)
+        )
+    }
+}
+
+@Composable
+fun CustomIconButton(
+    title: String,
+    onTap: () -> Unit,
+//    icon: 
+) {
+    TextButton(onClick = {
+        onTap()
+    }) {
+        Text(
+            text = title,
+            fontSize = 50.sp,
+            fontWeight = FontWeight.Bold,
+            style = TextStyle(textDecoration = TextDecoration.Underline),
+            color = colorResource(id = R.color.blackSteel)
+        )
+    }
+}
+
+@Composable
+fun PistolImage() {
+    Image(
+        painter = painterResource(id = R.drawable.top_page_gun_icon),
+        contentDescription = "Automatic Pistol Icon",
+        modifier = Modifier
+            .size(width = 300.dp, height = 200.dp)
+    )
+}
