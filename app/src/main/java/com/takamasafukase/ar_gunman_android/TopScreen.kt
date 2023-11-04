@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,6 @@ fun TopScreen(
         Column(
             modifier = Modifier
                 .padding(horizontal = 60.dp)
-//                .padding(40.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -109,14 +109,12 @@ fun TitleText(screenHeight: Int) {
     ) {
         Text(
             text = "AR",
-//            fontSize = 100.sp,
-            fontSize = (screenHeight * 0.2).sp,
+            fontSize = (screenHeight * 0.2).sp, // iOSだと固定で100
             fontWeight = FontWeight.Bold,
         )
         Text(
             text = "-GunMan",
-//            fontSize = 80.sp,
-            fontSize = (screenHeight * 0.16).sp,
+            fontSize = (screenHeight * 0.16).sp,  // iOSだと固定で80
             fontWeight = FontWeight.Bold,
         )
     }
@@ -132,8 +130,7 @@ fun SettingButton(
     }) {
         Text(
             text = "Settings",
-//            fontSize = 28.sp,
-            fontSize = (screenHeight * 0.056).sp,
+            fontSize = (screenHeight * 0.056).sp, // iOSだと固定で28
             fontWeight = FontWeight.Bold,
             style = TextStyle(textDecoration = TextDecoration.Underline),
             color = colorResource(id = R.color.blackSteel)
@@ -148,17 +145,21 @@ fun CustomIconButton(
     onTap: () -> Unit,
 //    icon: 
 ) {
-    TextButton(onClick = {
-        onTap()
-    }) {
-        Text(
-            text = title,
-//            fontSize = 50.sp,
-            fontSize = (screenHeight * 0.1).sp,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(textDecoration = TextDecoration.Underline),
-            color = colorResource(id = R.color.blackSteel)
-        )
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TargetImage(screenHeight = screenHeight)
+        TextButton(onClick = {
+            onTap()
+        }) {
+            Text(
+                text = title,
+                fontSize = (screenHeight * 0.1).sp, // iOSだと固定で50
+                fontWeight = FontWeight.Bold,
+                style = TextStyle(textDecoration = TextDecoration.Underline),
+                color = colorResource(id = R.color.blackSteel)
+            )
+        }
     }
 }
 
@@ -169,5 +170,16 @@ fun PistolImage() {
         contentDescription = "Automatic Pistol Icon",
         modifier = Modifier
             .size(width = 300.dp, height = 200.dp)
+    )
+}
+
+@Composable
+fun TargetImage(screenHeight: Int) {
+    val size = (screenHeight * 0.09).dp // iOSだと固定で45
+    Image(
+        painter = painterResource(id = R.drawable.target_icon),
+        contentDescription = "Target icon",
+        modifier = Modifier
+            .size(width = size, height = size)
     )
 }
