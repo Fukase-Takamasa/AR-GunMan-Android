@@ -39,7 +39,9 @@ class MainActivity : ComponentActivity() {
             startDestination = "top",
         ) {
             composable("top") {
+                val viewModel = TopViewModel()
                 TopScreen(
+                    viewModel = viewModel,
                     toSetting = {
                         navController.navigate("setting")
                     },

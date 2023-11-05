@@ -1,21 +1,17 @@
 package com.takamasafukase.ar_gunman_android
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -23,13 +19,42 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun TopScreen(
-    toSetting: () -> Unit,
+    viewModel: TopViewModel,
     toGame: () -> Unit,
+    toSetting: () -> Unit,
 ) {
     var isShowRankingDialog by remember { mutableStateOf(false) }
     var isShowTutorialDialog by remember { mutableStateOf(false) }
     val screenHeight = LocalConfiguration.current.screenHeightDp
+    val state = viewModel.state.collectAsState()
+    
+    val outputEvent = viewModel.outputEvent.collectAsState(initial = null)
 
+    // ViewModelからのOutput方向のイベントを購読
+    LaunchedEffect(outputEvent.value) {
+        outputEvent.value?.let {
+            when (it) {
+                TopViewModel.OutputEvent.ShowGame -> {
+                    // ゲーム画面へ遷移
+                    toGame()
+                }
+                TopViewModel.OutputEvent.ShowRanking -> {
+                    // ランキング画面（ダイアログ）を表示
+                    isShowRankingDialog = true
+                }
+                TopViewModel.OutputEvent.ShowTutorial -> {
+                    // チュートリアル画面（ダイアログ）を表示
+                    isShowTutorialDialog = true
+                }
+                TopViewModel.OutputEvent.ShowSetting -> {
+                    // 設定画面へ遷移
+                    toSetting()
+                }
+            }
+        }
+    }
+
+    // UIの構築
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = colorResource(id = R.color.goldLeaf)
@@ -44,7 +69,7 @@ fun TopScreen(
                 SettingButton(
                     screenHeight = screenHeight,
                     onTap = {
-                        toSetting()
+                        viewModel.onTapSettingButton()
                     })
                 Spacer(modifier = Modifier.weight(1f))
                 TitleText(screenHeight = screenHeight)
@@ -56,22 +81,25 @@ fun TopScreen(
                     CustomIconButton(
                         screenHeight = screenHeight,
                         title = "Start",
+                        iconResourceId = state.value.startButtonImageResourceId,
                         onTap = {
-                            toGame()
+                            viewModel.onTapStartButton()
                         }
                     )
                     CustomIconButton(
                         screenHeight = screenHeight,
                         title = "Ranking",
+                        iconResourceId = state.value.rankingButtonImageResourceId,
                         onTap = {
-                            isShowRankingDialog = true
+                            viewModel.onTapRankingButton()
                         }
                     )
                     CustomIconButton(
                         screenHeight = screenHeight,
                         title = "HowToPlay",
+                        iconResourceId = state.value.howToPlayButtonImageResourceId,
                         onTap = {
-                            isShowTutorialDialog = true
+                            viewModel.onTapHowToPlayButton()
                         }
                     )
                 }
@@ -82,9 +110,9 @@ fun TopScreen(
 
         // ランキングダイアログ
         if (isShowRankingDialog) {
-            val viewModel = RankingViewModel()
+            val rankingViewModel = RankingViewModel()
             RankingScreen(
-                viewModel = viewModel,
+                viewModel = rankingViewModel,
                 onClose = {
                     isShowRankingDialog = false
                 }
@@ -142,13 +170,16 @@ fun SettingButton(
 fun CustomIconButton(
     screenHeight: Int,
     title: String,
+    iconResourceId: Int,
     onTap: () -> Unit,
-//    icon: 
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TargetImage(screenHeight = screenHeight)
+        TargetImage(
+            resourceId = iconResourceId,
+            screenHeight = screenHeight,
+        )
         TextButton(onClick = {
             onTap()
         }) {
@@ -174,12 +205,12 @@ fun PistolImage() {
 }
 
 @Composable
-fun TargetImage(screenHeight: Int) {
-    val size = (screenHeight * 0.09).dp // iOSだと固定で45
+fun TargetImage(resourceId: Int, screenHeight: Int) {
+    val size = (screenHeight * 0.09).dp
     Image(
-        painter = painterResource(id = R.drawable.target_icon),
+        painter = painterResource(id = resourceId),
         contentDescription = "Target icon",
         modifier = Modifier
-            .size(width = size, height = size)
+            .size(size = size)
     )
 }
