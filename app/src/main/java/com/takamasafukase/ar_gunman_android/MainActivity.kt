@@ -71,22 +71,6 @@ class MainActivity : ComponentActivity() {
                     //todo closeではなくResultに変える
                 )
             }
-//            composable("ranking") {
-//                val viewModel = RankingViewModel()
-//                RankingScreen(
-//                    viewModel = viewModel,
-//                    onClose = {
-//
-//                    }
-//                )
-//            }
-//            composable("tutorial") {
-//                TutorialScreen(
-//                    onClose = {
-//
-//                    }
-//                )
-//            }
             composable("result") {
                 ResultScreen(
                     onReplay = {
