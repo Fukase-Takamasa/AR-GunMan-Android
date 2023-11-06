@@ -5,11 +5,14 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TopViewModel(application: Application) : AndroidViewModel(application) {
+class TopViewModel(audioManager: AudioManager) : ViewModel() {
+    val audioManager = audioManager
+
     sealed class IconButtonType {
         object Start : IconButtonType()
         object Ranking : IconButtonType()
@@ -60,7 +63,7 @@ class TopViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun switchButtonIconAndRevert(type: IconButtonType) {
         // ウエスタン風な銃声の再生
-        playSoundOfWesternPistol()
+        audioManager.playSound(R.raw.western_pistol_shoot)
         // 対象のボタンに弾痕の画像を表示
         when (type) {
             IconButtonType.Start -> {
@@ -102,11 +105,5 @@ class TopViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }, 500)
-    }
-
-    private fun playSoundOfWesternPistol() {
-        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.western_pistol_shoot)
-        mediaPlayer.isLooping = false
-        mediaPlayer.start()
     }
 }

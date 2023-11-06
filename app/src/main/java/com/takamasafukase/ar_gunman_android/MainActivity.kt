@@ -15,8 +15,12 @@ import androidx.navigation.compose.rememberNavController
 import com.takamasafukase.ar_gunman_android.ui.theme.ARGunManAndroidTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var audioManager: AudioManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        audioManager = AudioManager(context = application)
 
         setContent {
             ARGunManAndroidTheme {
@@ -39,7 +43,7 @@ class MainActivity : ComponentActivity() {
             startDestination = "top",
         ) {
             composable("top") {
-                val viewModel = TopViewModel(application = application)
+                val viewModel = TopViewModel(audioManager = audioManager)
                 TopScreen(
                     viewModel = viewModel,
                     toSetting = {
