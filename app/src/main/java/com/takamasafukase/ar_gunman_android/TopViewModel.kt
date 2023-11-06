@@ -1,13 +1,15 @@
 package com.takamasafukase.ar_gunman_android
 
+import android.app.Application
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TopViewModel : ViewModel() {
+class TopViewModel(application: Application) : AndroidViewModel(application) {
     sealed class IconButtonType {
         object Start : IconButtonType()
         object Ranking : IconButtonType()
@@ -57,7 +59,8 @@ class TopViewModel : ViewModel() {
     }
 
     private fun switchButtonIconAndRevert(type: IconButtonType) {
-        // TODO: ウエスタン風な銃声の再生
+        // ウエスタン風な銃声の再生
+        playSoundOfWesternPistol()
         // 対象のボタンに弾痕の画像を表示
         when (type) {
             IconButtonType.Start -> {
@@ -99,5 +102,11 @@ class TopViewModel : ViewModel() {
                 }
             }
         }, 500)
+    }
+
+    private fun playSoundOfWesternPistol() {
+        val mediaPlayer = MediaPlayer.create(getApplication(), R.raw.western_pistol_shoot)
+        mediaPlayer.isLooping = false
+        mediaPlayer.start()
     }
 }

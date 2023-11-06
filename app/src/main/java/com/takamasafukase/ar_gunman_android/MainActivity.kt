@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             startDestination = "top",
         ) {
             composable("top") {
-                val viewModel = TopViewModel()
+                val viewModel = TopViewModel(application = application)
                 TopScreen(
                     viewModel = viewModel,
                     toSetting = {
