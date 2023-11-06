@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class TopViewModel : ViewModel() {
-    // ViewModel => View方向の通知イベントの種別
-    sealed class OutputEvent {
-        object ShowGame : OutputEvent()
-        object ShowRanking : OutputEvent()
-        object ShowTutorial : OutputEvent()
-        object ShowSetting : OutputEvent()
+    sealed class IconButtonType {
+        object Start : IconButtonType()
+        object Ranking : IconButtonType()
+        object HowToPlay : IconButtonType()
     }
 
     private val _state = MutableStateFlow(
@@ -21,52 +19,62 @@ class TopViewModel : ViewModel() {
             startButtonImageResourceId = R.drawable.target_icon,
             rankingButtonImageResourceId = R.drawable.target_icon,
             howToPlayButtonImageResourceId = R.drawable.target_icon,
+            isShowRankingDialog = false,
+            isShowTutorialDialog = false,
         )
     )
     val state = _state.asStateFlow()
 
-    // ViewModel => View方向の通知イベント
-    private val _outputEvent = MutableSharedFlow<OutputEvent>()
-    val outputEvent = _outputEvent.asSharedFlow()
+    private val _showGame = MutableSharedFlow<Unit>()
+    val showGame = _showGame.asSharedFlow()
+    private val _showSetting = MutableSharedFlow<Unit>()
+    val showSetting = _showSetting.asSharedFlow()
 
     fun onTapStartButton() {
-        switchButtonIconAndRevert(type = OutputEvent.ShowGame)
+        switchButtonIconAndRevert(type = IconButtonType.Start)
     }
 
     fun onTapRankingButton() {
-        switchButtonIconAndRevert(type = OutputEvent.ShowRanking)
+        switchButtonIconAndRevert(type = IconButtonType.Ranking)
     }
 
     fun onTapHowToPlayButton() {
-        switchButtonIconAndRevert(type = OutputEvent.ShowTutorial)
+        switchButtonIconAndRevert(type = IconButtonType.HowToPlay)
     }
 
     fun onTapSettingButton() {
         viewModelScope.launch {
-            _outputEvent.emit(OutputEvent.ShowSetting)
+            _showSetting.emit(Unit)
         }
     }
 
-    private fun switchButtonIconAndRevert(type: OutputEvent) {
+    fun onCloseRankingDialog() {
+        _state.value = _state.value.copy(isShowRankingDialog = false)
+    }
+
+    fun onCloseTutorialDialog() {
+        _state.value = _state.value.copy(isShowTutorialDialog = false)
+    }
+
+    private fun switchButtonIconAndRevert(type: IconButtonType) {
         // TODO: ウエスタン風な銃声の再生
         // 対象のボタンに弾痕の画像を表示
         when (type) {
-            OutputEvent.ShowGame -> {
+            IconButtonType.Start -> {
                 _state.value = _state.value.copy(
                     startButtonImageResourceId = R.drawable.bullets_hole
                 )
             }
-            OutputEvent.ShowRanking -> {
+            IconButtonType.Ranking -> {
                 _state.value = _state.value.copy(
                     rankingButtonImageResourceId = R.drawable.bullets_hole
                 )
             }
-            OutputEvent.ShowTutorial -> {
+            IconButtonType.HowToPlay -> {
                 _state.value = _state.value.copy(
                     howToPlayButtonImageResourceId = R.drawable.bullets_hole
                 )
             }
-            else -> {}
         }
         // 0.5秒後の処理
         Handler(Looper.getMainLooper()).postDelayed({
@@ -79,16 +87,15 @@ class TopViewModel : ViewModel() {
             // 対象のボタンごとの遷移指示を流す
             viewModelScope.launch {
                 when (type) {
-                    OutputEvent.ShowGame -> {
-                        _outputEvent.emit(OutputEvent.ShowGame)
+                    IconButtonType.Start -> {
+                        _showGame.emit(Unit)
                     }
-                    OutputEvent.ShowRanking -> {
-                        _outputEvent.emit(OutputEvent.ShowRanking)
+                    IconButtonType.Ranking -> {
+                        _state.value = _state.value.copy(isShowRankingDialog = true)
                     }
-                    OutputEvent.ShowTutorial -> {
-                        _outputEvent.emit(OutputEvent.ShowTutorial)
+                    IconButtonType.HowToPlay -> {
+                        _state.value = _state.value.copy(isShowTutorialDialog = true)
                     }
-                    else -> {}
                 }
             }
         }, 500)

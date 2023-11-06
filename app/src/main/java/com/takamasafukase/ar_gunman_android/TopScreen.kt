@@ -1,6 +1,7 @@
 package com.takamasafukase.ar_gunman_android
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -8,6 +9,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -23,34 +25,20 @@ fun TopScreen(
     toGame: () -> Unit,
     toSetting: () -> Unit,
 ) {
-    var isShowRankingDialog by remember { mutableStateOf(false) }
-    var isShowTutorialDialog by remember { mutableStateOf(false) }
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state = viewModel.state.collectAsState()
-    
-    val outputEvent = viewModel.outputEvent.collectAsState(initial = null)
+    val showGameEvent = viewModel.showGame.collectAsState(initial = null)
+    val showSettingEvent = viewModel.showSetting.collectAsState(initial = null)
 
-    // ViewModelからのOutput方向のイベントを購読
-    LaunchedEffect(outputEvent.value) {
-        outputEvent.value?.let {
-            when (it) {
-                TopViewModel.OutputEvent.ShowGame -> {
-                    // ゲーム画面へ遷移
-                    toGame()
-                }
-                TopViewModel.OutputEvent.ShowRanking -> {
-                    // ランキング画面（ダイアログ）を表示
-                    isShowRankingDialog = true
-                }
-                TopViewModel.OutputEvent.ShowTutorial -> {
-                    // チュートリアル画面（ダイアログ）を表示
-                    isShowTutorialDialog = true
-                }
-                TopViewModel.OutputEvent.ShowSetting -> {
-                    // 設定画面へ遷移
-                    toSetting()
-                }
-            }
+    LaunchedEffect(showGameEvent.value) {
+        showGameEvent.value?.let {
+            toGame()
+        }
+    }
+
+    LaunchedEffect(showSettingEvent.value) {
+        showSettingEvent.value?.let {
+            toSetting()
         }
     }
 
@@ -109,21 +97,21 @@ fun TopScreen(
         }
 
         // ランキングダイアログ
-        if (isShowRankingDialog) {
+        if (state.value.isShowRankingDialog) {
             val rankingViewModel = RankingViewModel()
             RankingScreen(
                 viewModel = rankingViewModel,
                 onClose = {
-                    isShowRankingDialog = false
+                    viewModel.onCloseRankingDialog()
                 }
             )
         }
 
         // チュートリアルダイアログ
-        if (isShowTutorialDialog) {
+        if (state.value.isShowTutorialDialog) {
             TutorialScreen(
                 onClose = {
-                    isShowTutorialDialog = false
+                    viewModel.onCloseTutorialDialog()
                 }
             )
         }

@@ -4,4 +4,6 @@ data class TopViewState(
     val startButtonImageResourceId: Int,
     val rankingButtonImageResourceId: Int,
     val howToPlayButtonImageResourceId: Int,
+    val isShowRankingDialog: Boolean,
+    val isShowTutorialDialog: Boolean,
 )
