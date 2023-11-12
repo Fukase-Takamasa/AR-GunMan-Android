@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 
 
 dependencies {
-//    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
-//    implementation(name: 'arcore_client', ext:'aar')
-//    implementation(name: 'ARPresto', ext:'aar')
-//    implementation(name: 'UnityARCore', ext:'aar')
-//    implementation(name: 'unityandroidpermissions', ext:'aar')
-//    implementation project(':unityLibrary:xrmanifest.androidlib')
-//    implementation project(':unityLibrary')
     implementation project(':unityLibrary:xrmanifest.androidlib')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar', '*.aar'])
 }
