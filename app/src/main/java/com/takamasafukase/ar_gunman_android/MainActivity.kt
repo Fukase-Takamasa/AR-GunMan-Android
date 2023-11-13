@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -67,13 +68,8 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-            composable("game") {
-                GameScreen(
-                    onClose = {
-                        navController.navigate("top")
-                    }
-                    //todo closeではなくResultに変える
-                )
+            activity(route = "game") {
+                activityClass = GameActivity::class
             }
             composable("result") {
                 ResultScreen(
