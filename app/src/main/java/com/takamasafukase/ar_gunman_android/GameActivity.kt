@@ -11,7 +11,7 @@ import com.unity3d.player.UnityPlayer
 import com.unity3d.player.UnityPlayer.UnitySendMessage
 
 class GameActivity : ComponentActivity() {
-    private lateinit var unityPlayer: UnityPlayer
+    private var unityPlayer: UnityPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +22,7 @@ class GameActivity : ComponentActivity() {
 
         // FrameLayoutにUnityViewを追加
         val frameLayout = findViewById<FrameLayout>(R.id.unity)
-        frameLayout.addView(unityPlayer.view, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        frameLayout.addView(unityPlayer?.rootView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         // ComposeViewを作成してFrameLayoutに追加
         val composeView = ComposeView(this).apply {
@@ -39,8 +39,8 @@ class GameActivity : ComponentActivity() {
         }
         frameLayout.addView(composeView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
-        unityPlayer.requestFocus()
         // UnityPlayerにフォーカスを合わせる
+        unityPlayer?.requestFocus()
 
         Handler(Looper.getMainLooper()).postDelayed({
             UnitySendMessage("XR Origin", "ShowTallSphereToOrigin", "message from Android")
@@ -51,11 +51,11 @@ class GameActivity : ComponentActivity() {
     // Notify Unity of the focus change.
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        unityPlayer.windowFocusChanged(hasFocus)
+        unityPlayer?.windowFocusChanged(hasFocus)
     }
 
     override fun onResume() {
         super.onResume()
-        unityPlayer.resume()
+        unityPlayer?.resume()
     }
 }
