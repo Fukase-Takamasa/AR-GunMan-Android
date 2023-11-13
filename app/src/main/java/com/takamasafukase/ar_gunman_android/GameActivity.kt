@@ -1,9 +1,13 @@
 package com.takamasafukase.ar_gunman_android
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.unity3d.player.UnityPlayer
+import com.unity3d.player.UnityPlayer.UnitySendMessage
 import com.unity3d.player.UnityPlayerActivity
 
 class GameActivity : UnityPlayerActivity() {
@@ -25,6 +29,11 @@ class GameActivity : UnityPlayerActivity() {
         )
 
         unityPlayer?.requestFocus()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            UnitySendMessage("XR Origin", "ShowTallSphereToOrigin", "message from Android")
+            Log.d("Android", "ログAndroid: UnitySendMessageしました！！！！")
+        }, 5000)
     }
 
     // Notify Unity of the focus change.
