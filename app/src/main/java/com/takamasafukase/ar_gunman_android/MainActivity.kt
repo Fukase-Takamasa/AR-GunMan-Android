@@ -8,7 +8,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -68,18 +67,8 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-//            activity(route = "game") {
-//                activityClass = GameActivity::class
-//            }
-            composable(route = "game") {
-                GameScreen(
-                    toWeaponChange = {
-
-                    },
-                    toResult = {
-
-                    }
-                )
+            activity(route = "game") {
+                activityClass = GameActivity::class
             }
             composable("result") {
                 ResultScreen(

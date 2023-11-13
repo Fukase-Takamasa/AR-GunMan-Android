@@ -9,10 +9,18 @@
     tools:context=".GameActivity"
     tools:ignore="HardcodedText">
 
-    <View
-        android:id="@+id/unity"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+<!--    <View-->
+<!--        android:id="@+id/unity"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:layout_weight="1"-->
+<!--        android:background="#FF5733" />-->
+
+    <fragment
+        android:name="com.takamasafukase.ar_gunman_android.GameFragment"
+        android:id="@+id/fragment1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#FF5733" />
+        />
 </LinearLayout>
