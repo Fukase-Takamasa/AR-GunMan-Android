@@ -67,7 +67,7 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore-ktx")
     def navigation_compose_version = "2.5.3"
     implementation "androidx.navigation:navigation-compose:$navigation_compose_version"
-    implementation("androidx.constraintlayout:constraintlayout:2.2.0-alpha07")
-    // To use constraintlayout in compose
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha07")
+    implementation project(':unityLibrary')
+    implementation project(':unityLibrary:xrmanifest.androidlib')
+    implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar', '*.aar'])
 }
