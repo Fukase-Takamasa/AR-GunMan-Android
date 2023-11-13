@@ -68,8 +68,18 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
-            activity(route = "game") {
-                activityClass = GameActivity::class
+//            activity(route = "game") {
+//                activityClass = GameActivity::class
+//            }
+            composable(route = "game") {
+                GameScreen(
+                    toWeaponChange = {
+
+                    },
+                    toResult = {
+
+                    }
+                )
             }
             composable("result") {
                 ResultScreen(
