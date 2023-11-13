@@ -14,40 +14,40 @@ class GameFragment : Fragment() {
 //        super.onCreate(savedInstanceState)
 //    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // XMLからViewをインフレート
-        val view = inflater.inflate(R.layout.fragment_game, container, false)
-
-        // Unityのビューを設定（必要に応じてカスタマイズ）
-//        val unityView = view.findViewById<View>(R.id.unity)
-        // Unity関連の設定をここで行う
-
-        // ComposeViewを作成
-        val composeView = ComposeView(requireContext()).apply {
-            layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT
-            ).also {
-                // 必要に応じてレイアウトの調整
-            }
-
-            // Jetpack ComposeのUIをセット
-            setContent {
-                GameScreen(
-                    toWeaponChange = {
-
-                    },
-                    toResult = {
-
-                    }
-                )
-            }
-        }
-
-        // ComposeViewをFrameLayoutに追加
-        (view as FrameLayout).addView(composeView)
-
-        return view
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        // XMLからViewをインフレート
+//        val view = inflater.inflate(R.layout.fragment_game, container, false)
+//
+//        // Unityのビューを設定（必要に応じてカスタマイズ）
+////        val unityView = view.findViewById<View>(R.id.unity)
+//        // Unity関連の設定をここで行う
+//
+//        // ComposeViewを作成
+//        val composeView = ComposeView(requireContext()).apply {
+//            layoutParams = FrameLayout.LayoutParams(
+//                FrameLayout.LayoutParams.MATCH_PARENT,
+//                FrameLayout.LayoutParams.WRAP_CONTENT
+//            ).also {
+//                // 必要に応じてレイアウトの調整
+//            }
+//
+//            // Jetpack ComposeのUIをセット
+//            setContent {
+//                GameScreen(
+//                    toWeaponChange = {
+//
+//                    },
+//                    toResult = {
+//
+//                    }
+//                )
+//            }
+//        }
+//
+//        // ComposeViewをFrameLayoutに追加
+//        (view as FrameLayout).addView(composeView)
+//
+//        return view
+//    }
 
 }
