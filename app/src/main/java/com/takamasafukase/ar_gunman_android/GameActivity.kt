@@ -4,11 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.ui.platform.ComposeView
 import com.unity3d.player.UnityPlayer
 import com.unity3d.player.UnityPlayer.UnitySendMessage
@@ -20,7 +17,6 @@ class GameActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         unityPlayer = UnityPlayer(this)
-//        window.clearFlags(1024)
 
         setContentView(R.layout.activity_game)
 
@@ -28,13 +24,7 @@ class GameActivity : ComponentActivity() {
         val frameLayout = findViewById<FrameLayout>(R.id.unity)
         frameLayout.addView(unityPlayer.view, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
-        //        findViewById<FrameLayout>(R.id.unity)?.addView(
-//            unityPlayer, ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.MATCH_PARENT
-//            )
-//        )
-
+        // ComposeViewを作成してFrameLayoutに追加
         val composeView = ComposeView(this).apply {
             setContent {
                 GameScreen(
@@ -50,6 +40,7 @@ class GameActivity : ComponentActivity() {
         frameLayout.addView(composeView, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
 
         unityPlayer.requestFocus()
+        // UnityPlayerにフォーカスを合わせる
 
         Handler(Looper.getMainLooper()).postDelayed({
             UnitySendMessage("XR Origin", "ShowTallSphereToOrigin", "message from Android")
