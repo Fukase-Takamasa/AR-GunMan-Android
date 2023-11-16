@@ -2,26 +2,16 @@ package com.takamasafukase.ar_gunman_android
 
 import android.hardware.SensorManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import com.unity3d.player.UnityPlayer
-import com.unity3d.player.UnityPlayer.UnitySendMessage
 
 class GameActivity : ComponentActivity() {
     private var unityPlayer: UnityPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val gameViewModel = GameViewModel(
-            MotionDetector(
-                getSystemService(SENSOR_SERVICE) as SensorManager
-            )
-        )
 
         unityPlayer = UnityPlayer(this)
 
@@ -35,7 +25,9 @@ class GameActivity : ComponentActivity() {
         val composeView = ComposeView(this).apply {
             setContent {
                 GameScreen(
-                    viewModel = gameViewModel,
+                    viewModel = GameViewModel(
+                        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
+                    ),
                     toWeaponChange = {
 
                     },
@@ -49,11 +41,6 @@ class GameActivity : ComponentActivity() {
 
         // UnityPlayerにフォーカスを合わせる
         unityPlayer?.requestFocus()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            UnitySendMessage("XR Origin", "ShowTallSphereToOrigin", "message from Android")
-            Log.d("Android", "ログAndroid: UnitySendMessageしました！！！！")
-        }, 5000)
     }
 
     // Notify Unity of the focus change.
