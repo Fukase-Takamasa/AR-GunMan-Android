@@ -1,17 +1,13 @@
 package com.takamasafukase.ar_gunman_android
 
-import android.app.Application
-import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TopViewModel(audioManager: AudioManager) : ViewModel() {
-    val audioManager = audioManager
+class TopViewModel(private val audioManager: AudioManager) : ViewModel() {
 
     sealed class IconButtonType {
         object Start : IconButtonType()
