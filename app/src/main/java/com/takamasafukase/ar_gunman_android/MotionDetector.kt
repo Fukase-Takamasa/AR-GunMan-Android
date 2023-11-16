@@ -67,16 +67,24 @@ class MotionDetector(
         compositeValue: Float,
         gyroZSquaredValue: Float,
     ) {
+        Log.d("Android", "ログAndroid: handleUpdatedAccelerationData: compositeValue: $compositeValue, gyroZSquaredValue: $gyroZSquaredValue")
         if (compositeValue >= 1.5 && gyroZSquaredValue < 10) {
+            print("加速度　ピストル発射")
             onDetectPistolFiringMotion()
+        }else {
+            print("加速度　スルー")
         }
     }
 
     private fun handleUpdatedGyroData(
         compositeValue: Float,
     ) {
+        Log.d("Android", "ログAndroid: handleUpdatedGyroData: compositeValue: $compositeValue")
         if (compositeValue >= 10) {
+            print("ジャイロ　ピストルリロード")
             onDetectPistolReloadingMotion()
+        }else {
+            print("ジャイロ　スルー")
         }
     }
 
