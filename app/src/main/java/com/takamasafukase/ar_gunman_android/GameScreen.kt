@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun GameScreen(
+    viewModel: GameViewModel,
     toWeaponChange: () -> Unit,
     toResult: () -> Unit,
 ) {

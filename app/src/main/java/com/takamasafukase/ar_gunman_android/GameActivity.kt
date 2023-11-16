@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android
 
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -16,6 +17,12 @@ class GameActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val gameViewModel = GameViewModel(
+            MotionDetector(
+                getSystemService(SENSOR_SERVICE) as SensorManager
+            )
+        )
+
         unityPlayer = UnityPlayer(this)
 
         setContentView(R.layout.activity_game)
@@ -28,6 +35,7 @@ class GameActivity : ComponentActivity() {
         val composeView = ComposeView(this).apply {
             setContent {
                 GameScreen(
+                    viewModel = gameViewModel,
                     toWeaponChange = {
 
                     },
