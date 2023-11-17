@@ -12,6 +12,9 @@ class MotionDetector(
     val onDetectPistolReloadingMotion: () -> Unit,
     ) : SensorEventListener {
     private var gyroCompositeValue = 0f
+    private var sensorUpdatedCount = 0
+    private var previousDetectFiringMotionCount = 0
+    private var previousDetectReloadingMotionCount = 0
 
     init {
         registerListeners()
@@ -19,6 +22,7 @@ class MotionDetector(
 
     override fun onSensorChanged(event: SensorEvent) {
         Log.d("debug", "onSensorChanged")
+        sensorUpdatedCount++
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             handleUpdatedAccelerationData(
                 compositeValue = getCompositeValue(
@@ -67,24 +71,20 @@ class MotionDetector(
         compositeValue: Float,
         gyroZSquaredValue: Float,
     ) {
-        Log.d("Android", "ログAndroid: handleUpdatedAccelerationData: compositeValue: $compositeValue, gyroZSquaredValue: $gyroZSquaredValue")
-        if (compositeValue >= 1.5 && gyroZSquaredValue < 10) {
-            print("加速度　ピストル発射")
+        if ((compositeValue >= 300 && gyroZSquaredValue < 10) &&
+            (sensorUpdatedCount - previousDetectFiringMotionCount >= 50)) {
+            previousDetectFiringMotionCount = sensorUpdatedCount
             onDetectPistolFiringMotion()
-        }else {
-            print("加速度　スルー")
         }
     }
 
     private fun handleUpdatedGyroData(
         compositeValue: Float,
     ) {
-        Log.d("Android", "ログAndroid: handleUpdatedGyroData: compositeValue: $compositeValue")
-        if (compositeValue >= 10) {
-            print("ジャイロ　ピストルリロード")
+        if ((compositeValue >= 30) &&
+            (sensorUpdatedCount - previousDetectReloadingMotionCount >= 50)) {
+            previousDetectReloadingMotionCount = sensorUpdatedCount
             onDetectPistolReloadingMotion()
-        }else {
-            print("ジャイロ　スルー")
         }
     }
 
