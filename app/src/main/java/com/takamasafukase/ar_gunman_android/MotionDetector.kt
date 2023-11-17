@@ -19,7 +19,7 @@ class MotionDetector(
 
     override fun onSensorChanged(event: SensorEvent) {
         Log.d("debug", "onSensorChanged")
-        if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
+        if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             handleUpdatedAccelerationData(
                 compositeValue = getCompositeValue(
                     x = 0f,
