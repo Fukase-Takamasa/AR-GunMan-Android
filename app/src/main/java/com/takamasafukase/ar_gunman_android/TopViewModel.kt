@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class TopViewModel(private val audioManager: AudioManager) : ViewModel() {
+class TopViewModel(
+    private val audioManager: AudioManager
+) : ViewModel() {
 
     sealed class IconButtonType {
         object Start : IconButtonType()

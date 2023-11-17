@@ -6,7 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.unity3d.player.UnityPlayer
 
 class GameViewModel(
-    sensorManager: SensorManager
+    sensorManager: SensorManager,
+    private val audioManager: AudioManager,
 ) : ViewModel() {
     private var motionDetector: MotionDetector
 
@@ -15,11 +16,13 @@ class GameViewModel(
             sensorManager = sensorManager,
             onDetectPistolFiringMotion = {
                 Log.d("Android", "ログAndroid: onDetectPistolFiringMotion")
+                audioManager.playSound(R.raw.pistol_fire)
                 // Unityへ通知を送る
                 UnityPlayer.UnitySendMessage("XR Origin", "ShootBullet", "")
             },
             onDetectPistolReloadingMotion = {
                 Log.d("Android", "ログAndroid: onDetectPistolReloadingMotion")
+                audioManager.playSound(R.raw.pistol_reload)
                 // TODO: リロード後の処理
             }
         )
