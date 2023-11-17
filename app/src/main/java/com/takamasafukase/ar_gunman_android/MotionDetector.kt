@@ -11,9 +11,13 @@ class MotionDetector(
     val onDetectPistolFiringMotion: () -> Unit,
     val onDetectPistolReloadingMotion: () -> Unit,
     ) : SensorEventListener {
+    // 発射動作の判定では加速度＋ジャイロも使うので、最新の値としてここに格納して使う
     private var gyroCompositeValue = 0f
+    // センサーがアップデートされた回数を記録（加速度とジャイロで共通）
     private var sensorUpdatedCount = 0
+    // 前回発射動作を検知して時点でのアップデートカウントがいくつだったかを保持しておく
     private var previousDetectFiringMotionCount = 0
+    // 前回リロード動作を検知して時点でのアップデートカウントがいくつだったかを保持しておく
     private var previousDetectReloadingMotionCount = 0
 
     init {
@@ -21,7 +25,7 @@ class MotionDetector(
     }
 
     override fun onSensorChanged(event: SensorEvent) {
-        Log.d("debug", "onSensorChanged")
+        // センサーのアップデート回数をインクリメント
         sensorUpdatedCount++
         if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
             handleUpdatedAccelerationData(
@@ -72,6 +76,7 @@ class MotionDetector(
         gyroZSquaredValue: Float,
     ) {
         if ((compositeValue >= 300 && gyroZSquaredValue < 10) &&
+            // 前回の発射動作検知から50回のアップデートが経過しているかチェック
             (sensorUpdatedCount - previousDetectFiringMotionCount >= 50)) {
             previousDetectFiringMotionCount = sensorUpdatedCount
             onDetectPistolFiringMotion()
@@ -82,6 +87,7 @@ class MotionDetector(
         compositeValue: Float,
     ) {
         if ((compositeValue >= 30) &&
+            // 前回のリロード動作検知から50回のアップデートが経過しているかチェック
             (sensorUpdatedCount - previousDetectReloadingMotionCount >= 50)) {
             previousDetectReloadingMotionCount = sensorUpdatedCount
             onDetectPistolReloadingMotion()
