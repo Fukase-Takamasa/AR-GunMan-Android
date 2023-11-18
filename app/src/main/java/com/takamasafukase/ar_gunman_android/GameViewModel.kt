@@ -8,7 +8,7 @@ import com.unity3d.player.UnityPlayer
 class GameViewModel(
     sensorManager: SensorManager,
     private val audioManager: AudioManager,
-) : ViewModel() {
+) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
     private var motionDetector: MotionDetector
 
     init {
@@ -30,5 +30,9 @@ class GameViewModel(
 
     fun onTapWeaponChangeButton() {
 
+    }
+
+    override fun onMessageReceivedFromUnity(message: String) {
+        Log.d("Android", "ログAndroid: GameVM onMessageReceivedFromUnity message: $message")
     }
 }
