@@ -4,12 +4,16 @@ import android.hardware.SensorManager
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.unity3d.player.UnityPlayer
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class GameViewModel(
     sensorManager: SensorManager,
     private val audioManager: AudioManager,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
     private var motionDetector: MotionDetector
+    private val _state = MutableStateFlow(GameViewState(true))
+    val state = _state.asStateFlow()
 
     init {
         motionDetector = MotionDetector(
