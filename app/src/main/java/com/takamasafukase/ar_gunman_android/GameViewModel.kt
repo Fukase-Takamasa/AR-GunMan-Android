@@ -1,6 +1,8 @@
 package com.takamasafukase.ar_gunman_android
 
 import android.hardware.SensorManager
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.unity3d.player.UnityPlayer
@@ -11,11 +13,31 @@ class GameViewModel(
     sensorManager: SensorManager,
     private val audioManager: AudioManager,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
-    private var motionDetector: MotionDetector
+    private lateinit var motionDetector: MotionDetector
     private val _state = MutableStateFlow(GameViewState(true))
     val state = _state.asStateFlow()
 
     init {
+        showLoadingToHideUnityLogoSplash()
+        handleMotionDetector(sensorManager = sensorManager)
+    }
+
+    fun onTapWeaponChangeButton() {
+
+    }
+
+    override fun onMessageReceivedFromUnity(message: String) {
+        Log.d("Android", "ログAndroid: GameVM onMessageReceivedFromUnity message: $message")
+    }
+
+    // Unityビューを起動後にUnityロゴのスプラッシュが出るので、その間は黒背景とインジケータで隠す
+    private fun showLoadingToHideUnityLogoSplash() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            _state.value = _state.value.copy(isLoading = false)
+        }, 2500)
+    }
+
+    private fun handleMotionDetector(sensorManager: SensorManager) {
         motionDetector = MotionDetector(
             sensorManager = sensorManager,
             onDetectPistolFiringMotion = {
@@ -30,13 +52,5 @@ class GameViewModel(
                 // TODO: リロード後の処理
             }
         )
-    }
-
-    fun onTapWeaponChangeButton() {
-
-    }
-
-    override fun onMessageReceivedFromUnity(message: String) {
-        Log.d("Android", "ログAndroid: GameVM onMessageReceivedFromUnity message: $message")
     }
 }
