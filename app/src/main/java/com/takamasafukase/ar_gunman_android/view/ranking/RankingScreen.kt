@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.ranking
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +22,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.takamasafukase.ar_gunman_android.utility.CustomDialog
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.entity.Ranking
+import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
 
 @Composable
 fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {

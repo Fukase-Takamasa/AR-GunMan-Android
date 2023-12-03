@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.tutorial
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
+import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 
 @Composable
 fun TutorialScreen(

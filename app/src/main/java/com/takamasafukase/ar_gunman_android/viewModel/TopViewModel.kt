@@ -1,11 +1,21 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.viewModel
 
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
+import com.takamasafukase.ar_gunman_android.R
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+
+data class TopViewState(
+    val startButtonImageResourceId: Int,
+    val rankingButtonImageResourceId: Int,
+    val howToPlayButtonImageResourceId: Int,
+    val isShowRankingDialog: Boolean,
+    val isShowTutorialDialog: Boolean,
+)
 
 class TopViewModel(
     private val audioManager: AudioManager

@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.game
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +25,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 
 @Composable
 fun GameScreen(

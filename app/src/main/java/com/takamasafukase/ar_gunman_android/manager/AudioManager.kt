@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.manager
 
 import android.content.Context
 import android.media.MediaPlayer

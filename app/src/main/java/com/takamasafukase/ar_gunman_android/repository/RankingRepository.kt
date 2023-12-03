@@ -1,10 +1,11 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.repository
 
 import android.os.Handler
 import android.os.Looper
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.takamasafukase.ar_gunman_android.entity.Ranking
 
 class RankingRepository {
     private val db = Firebase.firestore

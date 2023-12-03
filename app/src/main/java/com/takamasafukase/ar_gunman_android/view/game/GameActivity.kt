@@ -1,10 +1,13 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.game
 
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 import com.unity3d.player.UnityPlayer
 
 class GameActivity : ComponentActivity() {

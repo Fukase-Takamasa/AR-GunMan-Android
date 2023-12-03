@@ -1,7 +1,13 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.viewModel
 
+import com.takamasafukase.ar_gunman_android.entity.Ranking
+import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
+data class RankingViewState(
+    val rankings: List<Ranking>,
+)
 
 class RankingViewModel {
     private val _state = MutableStateFlow(RankingViewState(listOf()))

@@ -12,7 +12,13 @@ import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
+import com.takamasafukase.ar_gunman_android.view.game.GameActivity
+import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
 import com.takamasafukase.ar_gunman_android.ui.theme.ARGunManAndroidTheme
+import com.takamasafukase.ar_gunman_android.view.result.ResultScreen
+import com.takamasafukase.ar_gunman_android.view.setting.SettingScreen
+import com.takamasafukase.ar_gunman_android.view.top.TopScreen
 
 class MainActivity : ComponentActivity() {
     private lateinit var audioManager: AudioManager

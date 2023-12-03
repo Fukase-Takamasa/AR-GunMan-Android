@@ -1,7 +1,6 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.top
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -9,7 +8,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -18,6 +16,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.view.tutorial.TutorialScreen
+import com.takamasafukase.ar_gunman_android.view.ranking.RankingScreen
+import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
+import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
 
 @Composable
 fun TopScreen(

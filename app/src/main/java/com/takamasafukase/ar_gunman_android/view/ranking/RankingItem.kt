@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.view.ranking
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,6 +13,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.entity.Ranking
 
 @Composable
 fun RankingItem(rankIndex: Int, ranking: Ranking) {

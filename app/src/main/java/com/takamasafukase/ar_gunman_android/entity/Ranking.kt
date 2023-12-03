@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.entity
 
 data class Ranking(
     val user_name: String = "",

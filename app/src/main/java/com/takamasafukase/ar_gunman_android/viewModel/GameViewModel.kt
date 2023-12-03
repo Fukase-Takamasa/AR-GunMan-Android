@@ -1,13 +1,21 @@
-package com.takamasafukase.ar_gunman_android
+package com.takamasafukase.ar_gunman_android.viewModel
 
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
+import com.takamasafukase.ar_gunman_android.manager.MotionDetector
+import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
 import com.unity3d.player.UnityPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+
+data class GameViewState(
+    val isLoading: Boolean,
+)
 
 class GameViewModel(
     sensorManager: SensorManager,
