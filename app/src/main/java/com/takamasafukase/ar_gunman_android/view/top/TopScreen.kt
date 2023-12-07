@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.view.top
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
@@ -101,7 +102,7 @@ fun TopScreen(
 
         // ランキングダイアログ
         if (state.value.isShowRankingDialog) {
-            val rankingViewModel = RankingViewModel()
+            val rankingViewModel = RankingViewModel(app = Application())
             RankingScreen(
                 viewModel = rankingViewModel,
                 onClose = {

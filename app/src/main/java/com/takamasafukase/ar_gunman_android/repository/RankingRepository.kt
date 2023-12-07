@@ -2,6 +2,7 @@ package com.takamasafukase.ar_gunman_android.repository
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -23,6 +24,7 @@ class RankingRepository {
                 )
             }
             .addOnFailureListener { error ->
+                Log.d("Android", "ログAndroid: getRankings error: $error")
                 onError(error)
             }
     }
@@ -35,6 +37,9 @@ class RankingRepository {
             onData(
                 (1..150).map { Ranking(score = 98.765, user_name = "ユーザー名") }
             )
+//            onError(
+//                Exception("Failed to get ranking list.")
+//            )
         }, 1000)
     }
 }
