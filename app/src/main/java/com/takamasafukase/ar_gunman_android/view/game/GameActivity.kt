@@ -1,10 +1,13 @@
 package com.takamasafukase.ar_gunman_android.view.game
 
+import android.content.Intent
 import android.hardware.SensorManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
@@ -32,11 +35,14 @@ class GameActivity : ComponentActivity() {
                         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
                         audioManager = AudioManager(context = application),
                     ),
-                    toWeaponChange = {
-
-                    },
                     toResult = {
+                        // 通知を送信して、MainActivity内のNavHostでresult画面に切り替える
+                        val intent = Intent("NAVIGATION_EVENT")
+                        intent.putExtra("destination", "result")
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
 
+                        // 上記だけだとこのActivityがMainActivity上に被さったままでresult画面が見えないので終了させる
+                        finish()
                     }
                 )
             }

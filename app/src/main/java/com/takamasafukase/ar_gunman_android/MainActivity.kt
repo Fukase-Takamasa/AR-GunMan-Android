@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -116,16 +117,33 @@ fun RootCompose() {
             }
         }
     }
+    val navigationNotificationHandler = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("Android", "ログAndroid: MainActivity onReceive navigationNotificationHandler")
+            val destinationNameText = intent?.getStringExtra("destination")
+            if (destinationNameText != null) {
+                Log.d("Android", "ログAndroid: MainActivity onReceive navController.navigate(destinationNameText)")
+                // 通知で受け取ったdestinationに遷移
+                navController.navigate(destinationNameText)
+            }
+        }
+    }
     DisposableEffect(Unit) {
         // 通知受信時の処理を登録
         LocalBroadcastManager.getInstance(context).registerReceiver(
             errorNotificationHandler, IntentFilter("ERROR_EVENT")
+        )
+        LocalBroadcastManager.getInstance(context).registerReceiver(
+            navigationNotificationHandler, IntentFilter("NAVIGATION_EVENT")
         )
 
         // onDisposeで通知受信時の処理を解除
         onDispose {
             LocalBroadcastManager.getInstance(context).unregisterReceiver(
                 errorNotificationHandler
+            )
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(
+                navigationNotificationHandler
             )
         }
     }

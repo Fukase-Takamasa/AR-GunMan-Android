@@ -25,13 +25,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 
 @Composable
 fun GameScreen(
     viewModel: GameViewModel,
-    toWeaponChange: () -> Unit,
     toResult: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -107,7 +107,8 @@ fun GameScreen(
                 onClick = {
                     // ローディング中は押せなくする
                     if (!state.isLoading) {
-                        toWeaponChange()
+//                        viewModel.onTapWeaponChangeButton()
+                        toResult()
                     }
                 },
                 modifier = Modifier
