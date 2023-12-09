@@ -12,13 +12,11 @@ import com.unity3d.player.UnityPlayer
 
 class GameActivity : ComponentActivity() {
     private var unityPlayer: UnityPlayer? = null
-    private lateinit var audioManager: AudioManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         unityPlayer = UnityPlayer(this)
-        audioManager = AudioManager(context = application)
 
         setContentView(R.layout.activity_game)
 
@@ -32,7 +30,7 @@ class GameActivity : ComponentActivity() {
                 GameScreen(
                     viewModel = GameViewModel(
                         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
-                        audioManager = audioManager,
+                        audioManager = AudioManager(context = application),
                     ),
                     toWeaponChange = {
 

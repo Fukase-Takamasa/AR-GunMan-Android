@@ -12,6 +12,7 @@ import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
 import com.unity3d.player.UnityPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.lang.ref.WeakReference
 
 data class GameViewState(
     val isLoading: Boolean,
@@ -28,6 +29,8 @@ class GameViewModel(
     init {
         showLoadingToHideUnityLogoSplash()
         handleMotionDetector(sensorManager = sensorManager)
+        // Unityからのメッセージの受け口になるオブジェクトの受け手として自身を弱参照で登録
+        UnityToAndroidMessenger.receiver = WeakReference(this)
     }
 
     fun onTapWeaponChangeButton() {
@@ -42,7 +45,7 @@ class GameViewModel(
     private fun showLoadingToHideUnityLogoSplash() {
         Handler(Looper.getMainLooper()).postDelayed({
             _state.value = _state.value.copy(isLoading = false)
-        }, 2500)
+        }, 3000)
     }
 
     private fun handleMotionDetector(sensorManager: SensorManager) {
