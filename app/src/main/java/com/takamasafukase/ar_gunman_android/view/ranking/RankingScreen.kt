@@ -111,7 +111,7 @@ fun TitleView(onClose: () -> Unit) {
         ) {
             Icon(
                 imageVector = Icons.Filled.Close,
-                contentDescription = ""
+                contentDescription = "Close Icon"
             )
         }
     }

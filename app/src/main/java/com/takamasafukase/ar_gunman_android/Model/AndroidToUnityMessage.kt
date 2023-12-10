@@ -18,4 +18,8 @@ enum class AndroidToUnityMessageEventType {
 enum class WeaponType {
     PISTOL,
     BAZOOKA,
+    RIFLE,
+    SHOT_GUN,
+    SNIPER_RIFLE,
+    MINI_GUN,
 }
