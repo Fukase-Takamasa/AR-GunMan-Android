@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.view.game
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,7 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.view.ranking.RankingScreen
+import com.takamasafukase.ar_gunman_android.view.tutorial.WeaponChangeScreen
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
+import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
 
 @Composable
 fun GameScreen(
@@ -107,8 +111,7 @@ fun GameScreen(
                 onClick = {
                     // ローディング中は押せなくする
                     if (!state.isLoading) {
-//                        viewModel.onTapWeaponChangeButton()
-                        toResult()
+                        viewModel.onTapWeaponChangeButton()
                     }
                 },
                 modifier = Modifier
@@ -123,5 +126,14 @@ fun GameScreen(
                 )
             }
         }
+    }
+
+    // 武器選択画面ダイアログ
+    if (state.isShowWeaponChangeDialog) {
+        WeaponChangeScreen(
+            onClose = {
+                viewModel.onCloseWeaponChangeDialog()
+            }
+        )
     }
 }

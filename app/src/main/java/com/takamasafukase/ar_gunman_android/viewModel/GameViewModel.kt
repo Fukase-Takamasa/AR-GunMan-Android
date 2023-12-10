@@ -24,6 +24,7 @@ import java.lang.ref.WeakReference
 
 data class GameViewState(
     val isLoading: Boolean,
+    val isShowWeaponChangeDialog: Boolean,
 )
 
 class GameViewModel(
@@ -31,7 +32,12 @@ class GameViewModel(
     private val audioManager: AudioManager,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
     private lateinit var motionDetector: MotionDetector
-    private val _state = MutableStateFlow(GameViewState(true))
+    private val _state = MutableStateFlow(
+        GameViewState(
+            isLoading = true,
+            isShowWeaponChangeDialog = false,
+        )
+    )
     val state = _state.asStateFlow()
 
     init {
@@ -42,7 +48,11 @@ class GameViewModel(
     }
 
     fun onTapWeaponChangeButton() {
+        _state.value = _state.value.copy(isShowWeaponChangeDialog = true)
+    }
 
+    fun onCloseWeaponChangeDialog() {
+        _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
     }
 
     override fun onMessageReceivedFromUnity(message: String) {
