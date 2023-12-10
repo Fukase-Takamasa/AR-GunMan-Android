@@ -8,13 +8,13 @@ data class AndroidToUnityMessage(
     val weaponType: WeaponType,
 )
 
-@Serializable
+@Serializable(with = AndroidToUnityMessageEventTypeSerializer::class)
 enum class AndroidToUnityMessageEventType {
     SHOW_WEAPON,
     FIRE_WEAPON,
 }
 
-@Serializable
+@Serializable(with = WeaponTypeSerializer::class)
 enum class WeaponType {
     PISTOL,
     BAZOOKA,

@@ -80,6 +80,8 @@ class GameViewModel(
         Log.d("Android", "ログAndroid: GameVM onMessageReceivedFromUnity message: $message")
 
         val fromUnityMessage = Json.decodeFromString<UnityToAndroidMessage>(message)
+        Log.d("Android", "ログAndroid: GameVM fromUnityMessage: $fromUnityMessage, eventType: ${fromUnityMessage.eventType}")
+
         when (fromUnityMessage.eventType) {
             UnityToAndroidMessageEventType.TARGET_HIT -> {
                 // TODO: スコアの加算処理

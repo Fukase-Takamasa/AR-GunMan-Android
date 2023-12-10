@@ -7,7 +7,7 @@ data class UnityToAndroidMessage(
     val eventType: UnityToAndroidMessageEventType,
 )
 
-@Serializable
+@Serializable(with = UnityToAndroidMessageEventTypeSerializer::class)
 enum class UnityToAndroidMessageEventType {
     TARGET_HIT,
 }
