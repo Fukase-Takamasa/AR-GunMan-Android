@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.view.weaponChange
 
+import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.Button
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +29,11 @@ import com.takamasafukase.ar_gunman_android.R
 
 
 @Composable
-fun WeaponListItem(type: WeaponType) {
+fun WeaponListItem(
+    type: WeaponType,
+    onTapItem: () -> Unit,
+) {
+    // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
     val imageResourceId = when (type) {
         WeaponType.PISTOL -> R.drawable.pistol
         WeaponType.BAZOOKA -> R.drawable.rocket_launcher
@@ -36,38 +43,45 @@ fun WeaponListItem(type: WeaponType) {
         WeaponType.MINI_GUN -> R.drawable.mini_gun
     }
     Box {
-        Image(
-            painter = painterResource(id = imageResourceId),
-            contentDescription = "Weapon icon",
-            colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-            alpha = if (type == WeaponType.PISTOL) 1f else 0.5f,
-            modifier = Modifier
-                .size(
-                    width = (LocalConfiguration.current.screenWidthDp * 0.38).dp,
-                    height = (LocalConfiguration.current.screenHeightDp * 0.7).dp,
-                )
-                .align(Alignment.Center)
-        )
-        if (type != WeaponType.PISTOL) {
-            Box(
+        IconButton(
+            modifier = Modifier,
+            onClick = {
+                onTapItem()
+            }
+        ) {
+            Image(
+                painter = painterResource(id = imageResourceId),
+                contentDescription = "Weapon icon",
+                colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
+                alpha = if (type == WeaponType.PISTOL) 1f else 0.5f,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(
-                        color = Color.Red,
+                    .size(
+                        width = (LocalConfiguration.current.screenWidthDp * 0.38).dp,
+                        height = (LocalConfiguration.current.screenHeightDp * 0.7).dp,
                     )
                     .align(Alignment.Center)
-            ) {
-                Text(
-                    "COMING SOON",
-                    color = colorResource(id = R.color.paper),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
+            )
+            if (type != WeaponType.PISTOL) {
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(align = Alignment.Center, unbounded = true)
-                        .padding(horizontal = 24.dp)
-                )
+                        .fillMaxWidth()
+                        .height(60.dp)
+                        .background(
+                            color = Color.Red,
+                        )
+                        .align(Alignment.Center)
+                ) {
+                    Text(
+                        "COMING SOON",
+                        color = colorResource(id = R.color.paper),
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .wrapContentSize(align = Alignment.Center, unbounded = true)
+                            .padding(horizontal = 24.dp)
+                    )
+                }
             }
         }
     }

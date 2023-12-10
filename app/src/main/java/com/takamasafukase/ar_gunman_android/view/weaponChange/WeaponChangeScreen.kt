@@ -1,16 +1,12 @@
 package com.takamasafukase.ar_gunman_android.view.tutorial
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
@@ -25,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +35,7 @@ import com.takamasafukase.ar_gunman_android.view.weaponChange.WeaponListItem
 @Composable
 fun WeaponChangeScreen(
     onClose: () -> Unit,
+    onSelectWeapon: (selectedWeapon: WeaponType) -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -55,7 +51,7 @@ fun WeaponChangeScreen(
                 color = Color.Transparent
             ) {
                 Box {
-                    WeaponListView()
+                    WeaponListView(onSelectWeapon)
                     TextButton(
                         modifier = Modifier
                             .align(Alignment.TopEnd),
@@ -91,14 +87,21 @@ fun WeaponChangeScreen(
 }
 
 @Composable
-fun WeaponListView() {
+fun WeaponListView(
+    onSelectWeapon: (selectedWeapon: WeaponType) -> Unit
+) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxSize()
     ) {
         items(WeaponType.values()) {
-            WeaponListItem(it)
+            WeaponListItem(
+                type = it,
+                onTapItem = {
+                    onSelectWeapon(it)
+                }
+            )
         }
     }
 }
@@ -106,7 +109,8 @@ fun WeaponListView() {
 @Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
 @Composable
 fun WeaponChangeScreenPreview() {
-    WeaponChangeScreen {
-
-    }
+    WeaponChangeScreen(
+        onClose = {},
+        onSelectWeapon = {}
+    )
 }

@@ -133,6 +133,9 @@ fun GameScreen(
         WeaponChangeScreen(
             onClose = {
                 viewModel.onCloseWeaponChangeDialog()
+            },
+            onSelectWeapon = {
+                viewModel.onSelectWeapon(it)
             }
         )
     }

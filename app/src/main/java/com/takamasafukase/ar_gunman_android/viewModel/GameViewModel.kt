@@ -55,6 +55,27 @@ class GameViewModel(
         _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
     }
 
+    fun onSelectWeapon(selectedWeapon: WeaponType) {
+        // 今は一旦ピストル以外は弾く
+        if (selectedWeapon != WeaponType.PISTOL) {
+            return
+        }
+
+        // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
+        val weaponSetSoundResourceId = when (selectedWeapon) {
+            WeaponType.PISTOL -> R.raw.pistol_slide
+            else -> 0
+        }
+        // 選択された武器に対応した音声を再生
+        audioManager.playSound(weaponSetSoundResourceId)
+
+        // Unityへ武器表示の通知を送る
+        // TODO: ここは武器が2つ以上に増えた時に実装する。今は武器の切り替えが無いので実装不要。
+
+        // ダイアログを閉じる
+        onCloseWeaponChangeDialog()
+    }
+
     override fun onMessageReceivedFromUnity(message: String) {
         Log.d("Android", "ログAndroid: GameVM onMessageReceivedFromUnity message: $message")
 
