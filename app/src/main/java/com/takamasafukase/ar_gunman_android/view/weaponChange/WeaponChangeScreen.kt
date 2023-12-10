@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.Model.WeaponType
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.utility.CustomDialog
+import com.takamasafukase.ar_gunman_android.view.weaponChange.WeaponListItem
 
 @Composable
 fun WeaponChangeScreen(
@@ -98,54 +99,6 @@ fun WeaponListView() {
     ) {
         items(WeaponType.values()) {
             WeaponListItem(it)
-        }
-    }
-}
-
-@Composable
-fun WeaponListItem(type: WeaponType) {
-    val imageResourceId = when (type) {
-        WeaponType.PISTOL -> R.drawable.pistol
-        WeaponType.BAZOOKA -> R.drawable.rocket_launcher
-        WeaponType.RIFLE -> R.drawable.rifle
-        WeaponType.SHOT_GUN -> R.drawable.shot_gun
-        WeaponType.SNIPER_RIFLE -> R.drawable.sniper_rifle
-        WeaponType.MINI_GUN -> R.drawable.mini_gun
-    }
-    Box {
-        Image(
-            painter = painterResource(id = imageResourceId),
-            contentDescription = "Weapon icon",
-            colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-            alpha = if (type == WeaponType.PISTOL) 1f else 0.5f,
-            modifier = Modifier
-                .size(
-                    width = (LocalConfiguration.current.screenWidthDp * 0.38).dp,
-                    height = (LocalConfiguration.current.screenHeightDp * 0.7).dp,
-                )
-                .align(Alignment.Center)
-        )
-        if (type != WeaponType.PISTOL) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .background(
-                        color = Color.Red,
-                    )
-                    .align(Alignment.Center)
-            ) {
-                Text(
-                    "COMING SOON",
-                    color = colorResource(id = R.color.paper),
-                    fontSize = 25.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .wrapContentSize(align = Alignment.Center, unbounded = true)
-                        .padding(horizontal = 24.dp)
-                )
-            }
         }
     }
 }
