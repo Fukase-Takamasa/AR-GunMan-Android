@@ -55,23 +55,26 @@ fun WeaponChangeScreen(
             ) {
                 Box {
                     WeaponListView()
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
+                    TextButton(
                         modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(end = 16.dp)
-                    ) {
-                        Image(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "Close Icon",
-                            colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-                            modifier = Modifier
-                                .size(32.dp)
-                        )
-                        TextButton(onClick = {
+                            .align(Alignment.TopEnd),
+                        onClick = {
                             onClose()
-                        }) {
+                        }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier
+                                .padding(end = 24.dp)
+                        ) {
+                            Image(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Close Icon",
+                                colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
                             Text(
                                 text = "CLOSE",
                                 fontSize = 32.sp,
