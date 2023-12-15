@@ -3,8 +3,10 @@ package com.takamasafukase.ar_gunman_android.viewModel
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.takamasafukase.ar_gunman_android.Model.AndroidToUnityMessage
 import com.takamasafukase.ar_gunman_android.Model.AndroidToUnityMessageEventType
 import com.takamasafukase.ar_gunman_android.Model.UnityToAndroidMessage
@@ -15,8 +17,19 @@ import com.takamasafukase.ar_gunman_android.manager.MotionDetector
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
 import com.unity3d.player.UnityPlayer
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -39,12 +52,23 @@ class GameViewModel(
         )
     )
     val state = _state.asStateFlow()
+    private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
 
     init {
         showLoadingToHideUnityLogoSplash()
         handleMotionDetector(sensorManager = sensorManager)
         // Unityからのメッセージの受け口になるオブジェクトの受け手として自身を弱参照で登録
         UnityToAndroidMessenger.receiver = WeakReference(this)
+
+        viewModelScope.launch {
+            onReceivedTargetHitEvent
+                .debounce(50)
+                .collect { _ ->
+                    // ターゲットヒット時の音声を再生
+                    audioManager.playSound(R.raw.head_shot)
+                    // TODO: スコアの加算処理
+                }
+        }
     }
 
     fun onTapWeaponChangeButton() {
@@ -84,8 +108,9 @@ class GameViewModel(
 
         when (fromUnityMessage.eventType) {
             UnityToAndroidMessageEventType.TARGET_HIT -> {
-                // TODO: スコアの加算処理
-                audioManager.playSound(R.raw.head_shot)
+                viewModelScope.launch {
+                    onReceivedTargetHitEvent.emit(Unit)
+                }
             }
         }
     }
@@ -122,3 +147,4 @@ class GameViewModel(
         )
     }
 }
+
