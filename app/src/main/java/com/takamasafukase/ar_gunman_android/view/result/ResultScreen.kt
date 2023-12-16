@@ -108,8 +108,8 @@ fun ResultScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.Start,
+                        // ColumnではなくBoxにして、若干重ねることで無駄な余白を削減して調節している
+                        Box(
                             modifier = Modifier
                                 .padding(bottom = 3.dp)
                                 .border(
@@ -123,16 +123,24 @@ fun ResultScreen(
                                 text = "score",
                                 color = colorResource(id = R.color.paper),
                                 fontSize = 22.sp,
-                            )
-                            Text(
-                                text = "%.3f".format(totalScore),
-                                color = colorResource(id = R.color.paper),
-                                fontSize = (screenHeight * 0.18).sp,
-                                fontWeight = FontWeight.Black,
-                                textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .align(Alignment.TopStart)
                             )
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                            ) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "%.3f".format(totalScore),
+                                    color = colorResource(id = R.color.paper),
+                                    fontSize = (screenHeight * 0.16).sp,
+                                    fontWeight = FontWeight.Black,
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                )
+                            }
                         }
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
