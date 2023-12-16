@@ -68,7 +68,6 @@ class GameViewModel(
     val showResult = _showResult.asSharedFlow()
 
     private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
-    private var currentWeaponType = WeaponType.PISTOL
 
     init {
         showLoadingToHideUnityLogoSplash()
@@ -138,13 +137,6 @@ class GameViewModel(
         viewModelScope.launch {
             currentWeapon.weaponTypeChanged
                 .collect {
-                    _state.value = _state.value.copy(
-                        bulletsCountImageResourceId = it.getBulletsCountImageResourceId(
-                            // 現在の残弾数に応じた画像を設定
-                            count = currentWeapon.bulletsCountChanged.value
-                        )
-                    )
-
                     // TODO: UnityにshowWeaponの通知を送る（これは武器が2つ以上に増えた時に実装する）
                 }
         }
@@ -155,12 +147,26 @@ class GameViewModel(
                     // 現在の武器の射撃命令のメッセージを作成
                     val toUnityMessage = AndroidToUnityMessage(
                         eventType = AndroidToUnityMessageEventType.FIRE_WEAPON,
-                        weaponType = currentWeaponType,
+                        weaponType = currentWeapon.weaponTypeChanged.value,
                     )
                     // JSON文字列に変換
                     val jsonString = Json.encodeToString(toUnityMessage)
                     // Unityへ通知を送る
                     UnityPlayer.UnitySendMessage("XR Origin", "OnReceiveMessageFromAndroid", jsonString)
+                }
+        }
+
+        viewModelScope.launch {
+            currentWeapon.bulletsCountChanged
+                .collect {
+                    Log.d("Android", "ログAndroid: GameVM currentWeapon.bulletsCountChanged count: $it")
+                    _state.value = _state.value.copy(
+                        bulletsCountImageResourceId = currentWeapon.weaponTypeChanged.value
+                            // 現在の残弾数に応じた画像を設定
+                            .getBulletsCountImageResourceId(count = it)
+                    )
+
+                    // TODO: UnityにshowWeaponの通知を送る（これは武器が2つ以上に増えた時に実装する）
                 }
         }
     }
@@ -172,8 +178,7 @@ class GameViewModel(
     fun onCloseWeaponChangeDialog() {
         _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
 
-        // 現在の武器の表示音声を鳴らす（武器が変更されずにただcloseやエッジスワイプで閉じられた時も含めるためここで呼び出している）
-        audioManager.playSound(currentWeaponType.setSoundResourceId)
+        // TODO: 武器が変更されずにただcloseやエッジスワイプで閉じられた時も含めて鳴らしたい
     }
 
     fun onSelectWeapon(selectedWeapon: WeaponType) {
@@ -183,7 +188,7 @@ class GameViewModel(
         }
 
         // currentWeaponTypeを更新する
-        currentWeaponType = selectedWeapon
+        currentWeapon.changeWeaponTypeTo(newType = selectedWeapon)
 
         // Unityへ武器表示の通知を送る
         // TODO: ここは武器が2つ以上に増えた時に実装する。今は武器の切り替えが無いので実装不要。
@@ -251,7 +256,7 @@ class GameViewModel(
         // ターゲットヒット時の音声を再生
         audioManager.playSound(R.raw.head_shot)
         // 現在の武器に応じた得点の加算処理を行わせる
-        scoreCounter.addScore(weaponType = currentWeaponType)
+        scoreCounter.addScore(weaponType = currentWeapon.weaponTypeChanged.value)
     }
 }
 

@@ -16,8 +16,12 @@ class BulletsHolder(
     private val bulletsCountFlow = MutableStateFlow(type.bulletsCapacity)
     val bulletsCountChanged = bulletsCountFlow.asStateFlow()
 
-    val canFire: Boolean = (bulletsCountFlow.value > 0)
-    val canReload: Boolean = (bulletsCountFlow.value <= 0)
+    fun getCanFire() : Boolean {
+        return bulletsCountFlow.value > 0
+    }
+    fun getCanReload() : Boolean {
+        return bulletsCountFlow.value <= 0
+    }
 
     fun decreaseBulletsCount() {
         CoroutineScope(Dispatchers.Default).launch {

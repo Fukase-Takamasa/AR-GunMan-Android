@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.manager
 
+import android.util.Log
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import kotlinx.coroutines.CoroutineScope
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CurrentWeapon(
-    private val initialType: WeaponType,
+    initialType: WeaponType,
     private val audioManager: AudioManager,
 ) {
     private val weaponTypeFlow = MutableStateFlow(initialType)
@@ -24,7 +25,7 @@ class CurrentWeapon(
     val fired = firedFlow.asSharedFlow()
 
     fun fire() {
-        if (!bulletsHolder.canFire) {
+        if (!bulletsHolder.getCanFire()) {
             // 弾切れ状態でバズーカ以外なら弾切れ音声を再生してreturn
             if (weaponTypeFlow.value != WeaponType.BAZOOKA) {
                 audioManager.playSound(R.raw.pistol_out_bullets)
@@ -34,6 +35,7 @@ class CurrentWeapon(
         // 現在の武器の発砲音声を再生
         audioManager.playSound(weaponTypeFlow.value.firingSoundResourceId)
         // 弾数を1つ減らす
+        Log.d("Android", "ログAndroid: fire() decrease呼びます")
         bulletsHolder.decreaseBulletsCount()
         CoroutineScope(Dispatchers.Default).launch {
             // 発射されたことを通知
@@ -43,7 +45,7 @@ class CurrentWeapon(
 
     fun reload() {
         // 弾が0じゃない時はreturn
-        if (!bulletsHolder.canReload) {
+        if (!bulletsHolder.getCanReload()) {
             return
         }
         if (weaponTypeFlow.value != WeaponType.BAZOOKA) {
