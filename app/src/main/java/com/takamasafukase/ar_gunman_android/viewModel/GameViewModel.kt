@@ -53,6 +53,7 @@ class GameViewModel(
     )
     val state = _state.asStateFlow()
     private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
+    private var currentWeaponType = WeaponType.PISTOL;
 
     init {
         showLoadingToHideUnityLogoSplash()
@@ -75,6 +76,15 @@ class GameViewModel(
 
     fun onCloseWeaponChangeDialog() {
         _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
+
+        // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
+        // TODO: 武器が変更されずにただcloseやエッジスワイプで閉じられた時も現在の武器の表示音声を鳴らす
+        val weaponSetSoundResourceId = when (currentWeaponType) {
+            WeaponType.PISTOL -> R.raw.pistol_slide
+            else -> 0
+        }
+        // 選択された武器に対応した音声を再生
+        audioManager.playSound(weaponSetSoundResourceId)
     }
 
     fun onSelectWeapon(selectedWeapon: WeaponType) {
@@ -83,13 +93,8 @@ class GameViewModel(
             return
         }
 
-        // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
-        val weaponSetSoundResourceId = when (selectedWeapon) {
-            WeaponType.PISTOL -> R.raw.pistol_slide
-            else -> 0
-        }
-        // 選択された武器に対応した音声を再生
-        audioManager.playSound(weaponSetSoundResourceId)
+        // currentWeaponTypeを更新する
+        currentWeaponType = selectedWeapon
 
         // Unityへ武器表示の通知を送る
         // TODO: ここは武器が2つ以上に増えた時に実装する。今は武器の切り替えが無いので実装不要。
@@ -130,7 +135,7 @@ class GameViewModel(
                 // ピストル射撃命令のメッセージを作成
                 val toUnityMessage = AndroidToUnityMessage(
                     eventType = AndroidToUnityMessageEventType.FIRE_WEAPON,
-                    weaponType = WeaponType.PISTOL,
+                    weaponType = currentWeaponType,
                 )
                 // JSON文字列に変換
                 val jsonString = Json.encodeToString(toUnityMessage)
