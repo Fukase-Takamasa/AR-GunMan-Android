@@ -64,9 +64,7 @@ class GameViewModel(
             onReceivedTargetHitEvent
                 .debounce(50)
                 .collect { _ ->
-                    // ターゲットヒット時の音声を再生
-                    audioManager.playSound(R.raw.head_shot)
-                    // TODO: スコアの加算処理
+                    handleTargetHit()
                 }
         }
     }
@@ -145,6 +143,12 @@ class GameViewModel(
                 // TODO: リロード後の処理
             }
         )
+    }
+
+    private fun handleTargetHit() {
+        // ターゲットヒット時の音声を再生
+        audioManager.playSound(R.raw.head_shot)
+        // TODO: スコアの加算処理
     }
 }
 
