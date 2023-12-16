@@ -103,7 +103,7 @@ fun GameScreen(
             }
             // 弾数表示の画像
             Image(
-                painter = painterResource(id = R.drawable.bullets_7),
+                painter = painterResource(id = state.bulletsCountImageResourceId),
                 contentDescription = "Pistol bullets",
                 modifier = Modifier
                     .size(width = (screenWidth / 4.28).dp, height = (screenHeight / 5.71).dp)

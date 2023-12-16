@@ -15,6 +15,8 @@ import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.manager.MotionDetector
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
+import com.takamasafukase.ar_gunman_android.manager.CurrentWeapon
+import com.takamasafukase.ar_gunman_android.manager.ScoreCounter
 import com.takamasafukase.ar_gunman_android.manager.TimeCounter
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.unity3d.player.UnityPlayer
@@ -45,7 +47,10 @@ class GameViewModel(
     private val audioManager: AudioManager,
     private val timeCounter: TimeCounter,
     private val timeCountUtil: TimeCountUtil,
+    private val currentWeapon: CurrentWeapon,
+    private val scoreCounter: ScoreCounter,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
+
     private lateinit var motionDetector: MotionDetector
     private val _state = MutableStateFlow(
         GameViewState(
@@ -98,6 +103,7 @@ class GameViewModel(
                     )
                 }
         }
+
         viewModelScope.launch {
             timeCounter.countEnded
                 .collect {
@@ -120,6 +126,35 @@ class GameViewModel(
                             _showResultScreen.emit(Unit)
                         }
                     }, 1500)
+                }
+        }
+
+        viewModelScope.launch {
+            currentWeapon.weaponTypeChanged
+                .collect {
+                    _state.value = _state.value.copy(
+                        bulletsCountImageResourceId = it.getBulletsCountImageResourceId(
+                            // 現在の残弾数に応じた画像を設定
+                            count = currentWeapon.bulletsCountChanged.value
+                        )
+                    )
+
+                    // TODO: UnityにshowWeaponの通知を送る（これは武器が2つ以上に増えた時に実装する）
+                }
+        }
+
+        viewModelScope.launch {
+            currentWeapon.fired
+                .collect {
+                    // 現在の武器の射撃命令のメッセージを作成
+                    val toUnityMessage = AndroidToUnityMessage(
+                        eventType = AndroidToUnityMessageEventType.FIRE_WEAPON,
+                        weaponType = currentWeaponType,
+                    )
+                    // JSON文字列に変換
+                    val jsonString = Json.encodeToString(toUnityMessage)
+                    // Unityへ通知を送る
+                    UnityPlayer.UnitySendMessage("XR Origin", "OnReceiveMessageFromAndroid", jsonString)
                 }
         }
     }
@@ -196,23 +231,12 @@ class GameViewModel(
         motionDetector = MotionDetector(
             sensorManager = sensorManager,
             onDetectWeaponFiringMotion = {
-                Log.d("Android", "ログAndroid: onDetectPistolFiringMotion")
-                audioManager.playSound(currentWeaponType.firingSoundResourceId)
-
-                // ピストル射撃命令のメッセージを作成
-                val toUnityMessage = AndroidToUnityMessage(
-                    eventType = AndroidToUnityMessageEventType.FIRE_WEAPON,
-                    weaponType = currentWeaponType,
-                )
-                // JSON文字列に変換
-                val jsonString = Json.encodeToString(toUnityMessage)
-                // Unityへ通知を送る
-                UnityPlayer.UnitySendMessage("XR Origin", "OnReceiveMessageFromAndroid", jsonString)
+                // 現在の武器に発射処理を行わせる
+                currentWeapon.fire()
             },
             onDetectWeaponReloadingMotion = {
-                Log.d("Android", "ログAndroid: onDetectPistolReloadingMotion")
-                audioManager.playSound(currentWeaponType.reloadSoundResourceId)
-                // TODO: リロード後の処理
+                // 現在の武器にリロード処理を行わせる
+                currentWeapon.reload()
             }
         )
     }
@@ -220,7 +244,8 @@ class GameViewModel(
     private fun handleTargetHit() {
         // ターゲットヒット時の音声を再生
         audioManager.playSound(R.raw.head_shot)
-        // TODO: スコアの加算処理
+        // 現在の武器に応じた得点の加算処理を行わせる
+        scoreCounter.addScore(weaponType = currentWeaponType)
     }
 }
 
