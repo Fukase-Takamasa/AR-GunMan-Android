@@ -1,6 +1,5 @@
 package com.takamasafukase.ar_gunman_android.view.game
 
-import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,6 +13,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -26,21 +26,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.takamasafukase.ar_gunman_android.R
-import com.takamasafukase.ar_gunman_android.view.ranking.RankingScreen
 import com.takamasafukase.ar_gunman_android.view.tutorial.WeaponChangeScreen
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
-import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
 
 @Composable
 fun GameScreen(
     viewModel: GameViewModel,
     toResult: () -> Unit,
 ) {
-    val state by viewModel.state.collectAsState()
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val screenWidth = LocalConfiguration.current.screenWidthDp
+    val state by viewModel.state.collectAsState()
+    val showResultEvent = viewModel.showResultScreen.collectAsState(initial = null)
+
+    LaunchedEffect(showResultEvent.value) {
+        showResultEvent.value?.let {
+            toResult()
+        }
+    }
 
     Surface(
         color = Color.Transparent,
@@ -78,7 +82,7 @@ fun GameScreen(
                     )
             ) {
                 Text(
-                    text = "30:00", // TODO: 実際のタイマーと連動させる
+                    text = state.timeCountText,
                     color = colorResource(id = R.color.paper),
                     fontSize = (screenHeight * 0.09).sp,
                     fontWeight = FontWeight.Normal,

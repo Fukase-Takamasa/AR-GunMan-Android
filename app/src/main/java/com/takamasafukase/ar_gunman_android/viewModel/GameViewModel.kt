@@ -3,7 +3,6 @@ package com.takamasafukase.ar_gunman_android.viewModel
 import android.hardware.SensorManager
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,20 +15,22 @@ import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.manager.MotionDetector
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
+import com.takamasafukase.ar_gunman_android.manager.TimeCounter
+import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.unity3d.player.UnityPlayer
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -37,23 +38,34 @@ import java.lang.ref.WeakReference
 
 data class GameViewState(
     val isLoading: Boolean,
+    val isShowTutorialDialog: Boolean,
     val isShowWeaponChangeDialog: Boolean,
+    val timeCountText: String,
+    val bulletsCountImageResourceId: Int,
 )
 
 class GameViewModel(
     sensorManager: SensorManager,
     private val audioManager: AudioManager,
+    private val timeCounter: TimeCounter,
+    private val timeCountUtil: TimeCountUtil,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
+
     private lateinit var motionDetector: MotionDetector
     private val _state = MutableStateFlow(
         GameViewState(
             isLoading = true,
+            isShowTutorialDialog = false,
             isShowWeaponChangeDialog = false,
+            timeCountText = "30.00",
+            bulletsCountImageResourceId = R.drawable.bullets_7,
         )
     )
     val state = _state.asStateFlow()
+    private val _showResultScreen = MutableSharedFlow<Unit>()
+    val showResultScreen = _showResultScreen.asSharedFlow()
     private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
-    private var currentWeaponType = WeaponType.PISTOL;
+    private var currentWeaponType = WeaponType.PISTOL
 
     init {
         showLoadingToHideUnityLogoSplash()
@@ -62,10 +74,57 @@ class GameViewModel(
         UnityToAndroidMessenger.receiver = WeakReference(this)
 
         viewModelScope.launch {
+            _state
+                // isLoadingの値だけのflowに変換
+                .map { MutableStateFlow(it.isLoading) }
+                // falseの場合のみ通す
+                .filter { isLoading -> !isLoading.value}
+                // 最初の一回だけを通す
+                .first()
+                .collect {
+                    // 初回のロードが終わった最初の1回だけを検知し、チュートリアル状態のチェックをする
+                    checkTutorialSeenStatus()
+                }
+        }
+
+        viewModelScope.launch {
             onReceivedTargetHitEvent
                 .debounce(50)
-                .collect { _ ->
+                .collect {
                     handleTargetHit()
+                }
+        }
+
+        viewModelScope.launch {
+            timeCounter.countChanged
+                .collect {
+                    _state.value = _state.value.copy(
+                        timeCountText = timeCountUtil.getTwoDigitTimeCountText(it)
+                    )
+                }
+        }
+        viewModelScope.launch {
+            timeCounter.countEnded
+                .collect {
+                    // 終了音声を再生
+                    audioManager.playSound(R.raw.end_whistle)
+
+                    // タイマーを破棄
+                    timeCounter.disposeTimer()
+
+                    // モーション検知を終了
+                    motionDetector.stopUpdate()
+
+                    // 1.5秒後に結果画面に遷移指示を流す
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        // 結果画面と名前登録ダイアログの出現音声を再生
+                        audioManager.playSound(R.raw.ranking_appear)
+
+                        viewModelScope.launch {
+                            // 遷移指示を流す
+                            _showResultScreen.emit(Unit)
+                        }
+                    }, 1500)
                 }
         }
     }
@@ -123,6 +182,25 @@ class GameViewModel(
         Handler(Looper.getMainLooper()).postDelayed({
             _state.value = _state.value.copy(isLoading = false)
         }, 3000)
+    }
+
+    private fun checkTutorialSeenStatus() {
+        // TODO: Tutorialを見たかどうかをSharedPrefに保存＆確認して処理の分岐
+
+        // TODO: まだチュートリアルを見ていない時の処理　チュートリアルダイアログの表示
+
+        // すでにチュートリアルを見終わっている時の処理
+        // デフォルトの武器を選択
+        onSelectWeapon(selectedWeapon = WeaponType.PISTOL)
+
+        // 1.5秒後にタイマーを開始
+        Handler(Looper.getMainLooper()).postDelayed({
+            // スタート音声を再生
+            audioManager.playSound(R.raw.start_whistle)
+
+            // タイマーを開始
+            timeCounter.startTimer()
+        }, 1500)
     }
 
     private fun handleMotionDetector(sensorManager: SensorManager) {
