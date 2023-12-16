@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.view.result
 
+import android.app.Application
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,11 +18,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
@@ -36,129 +42,142 @@ import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
+import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
 
 @Composable
 fun ResultScreen(
+    viewModel: ResultViewModel,
     totalScore: Double,
     onReplay: () -> Unit,
     toHome: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
+    val state by viewModel.state.collectAsState()
 
-    Column(
+    Surface(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 10.dp)
+            .fillMaxSize(),
+        color = Color.Black
     ) {
-        // 上部のタイトル部分
-        TitleView()
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    width = 5.dp,
-                    color = colorResource(id = R.color.customBrown1),
-                    shape = RoundedCornerShape(size = 2.dp)
-                )
-                .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
+                .fillMaxSize()
+                .padding(all = 4.dp)
         ) {
-            Box(
+            // 上部のタイトル部分
+            TitleView()
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
-                    .width((screenWidth * 0.465).dp)
-            ) {
-                RankingListView(
-                    list = listOf(
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
-                        Ranking(user_name = "テスト", score = 98.765),
+                    .fillMaxWidth()
+                    .border(
+                        width = 5.dp,
+                        color = colorResource(id = R.color.customBrown1),
+                        shape = RoundedCornerShape(size = 2.dp)
                     )
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .width((screenWidth * 0.465).dp)
+                    .padding(start = 8.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                Box(
+                    modifier = Modifier
+                        .width((screenWidth * 0.465).dp)
+                ) {
+                    RankingListView(list = state.rankings)
+                    if (state.rankings.isEmpty()) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                // TODO: あとでRankingListViewは枠線無しのリスト部分だけにした方が汎用性高いかも？
+                                // ローディング時も同じ内側の枠線を表示しておく
+                                .border(
+                                    width = 7.dp,
+                                    color = colorResource(id = R.color.goldLeaf),
+                                    shape = RoundedCornerShape(size = 3.dp)
+                                )
+                        ) {
+                            CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                        }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .width((screenWidth * 0.465).dp)
                 ) {
                     Column(
-                        horizontalAlignment = Alignment.Start,
-                        modifier = Modifier
-                            .padding(bottom = 3.dp)
-                            .border(
-                                width = 7.dp,
-                                color = colorResource(id = R.color.goldLeaf),
-                                shape = RoundedCornerShape(size = 3.dp)
-                            )
-                            .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 4.dp)
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(
-                            text = "score",
-                            color = colorResource(id = R.color.paper),
-                            fontSize = 22.sp,
-                        )
-                        Text(
-                            text = "$totalScore",
-                            color = colorResource(id = R.color.paper),
-                            fontSize = (screenHeight * 0.18).sp,
-                            fontWeight = FontWeight.Black,
-                            textAlign = TextAlign.Center,
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .padding(bottom = 3.dp)
+                                .border(
+                                    width = 7.dp,
+                                    color = colorResource(id = R.color.goldLeaf),
+                                    shape = RoundedCornerShape(size = 3.dp)
+                                )
+                                .padding(start = 16.dp, top = 4.dp, end = 16.dp, bottom = 4.dp)
+                        ) {
+                            Text(
+                                text = "score",
+                                color = colorResource(id = R.color.paper),
+                                fontSize = 22.sp,
+                            )
+                            Text(
+                                text = "%.3f".format(totalScore),
+                                color = colorResource(id = R.color.paper),
+                                fontSize = (screenHeight * 0.18).sp,
+                                fontWeight = FontWeight.Black,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            )
+                        }
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
                             modifier = Modifier
                                 .fillMaxWidth()
-                        )
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 3.dp)
-                            .border(
-                                width = 7.dp,
-                                color = colorResource(id = R.color.goldLeaf),
-                                shape = RoundedCornerShape(size = 3.dp)
-                            )
-                            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-                    ) {
-                        Image(
-                            painter = painterResource(id = WeaponType.PISTOL.weaponIconResourceId),
-                            contentDescription = "Weapon icon",
-                            colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-                            alpha = 1f,
-                            modifier = Modifier
-                        )
-                        Column(
-                            verticalArrangement = Arrangement.SpaceEvenly,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxHeight()
+                                .padding(top = 3.dp)
+                                .border(
+                                    width = 7.dp,
+                                    color = colorResource(id = R.color.goldLeaf),
+                                    shape = RoundedCornerShape(size = 3.dp)
+                                )
+                                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
                         ) {
-                            TextButton(onClick = {
-                                onReplay()
-                            }) {
-                                Text(
-                                    text = "REPLAY",
-                                    color = colorResource(id = R.color.paper),
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            }
-                            TextButton(onClick = {
-                                toHome()
-                            }) {
-                                Text(
-                                    text = "HOME",
-                                    color = colorResource(id = R.color.paper),
-                                    fontSize = 25.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
+                            Image(
+                                painter = painterResource(id = WeaponType.PISTOL.weaponIconResourceId),
+                                contentDescription = "Weapon icon",
+                                colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
+                                alpha = 1f,
+                                modifier = Modifier
+                            )
+                            Column(
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxHeight()
+                            ) {
+                                TextButton(onClick = {
+                                    onReplay()
+                                }) {
+                                    Text(
+                                        text = "REPLAY",
+                                        color = colorResource(id = R.color.paper),
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
+                                TextButton(onClick = {
+                                    toHome()
+                                }) {
+                                    Text(
+                                        text = "HOME",
+                                        color = colorResource(id = R.color.paper),
+                                        fontSize = 25.sp,
+                                        fontWeight = FontWeight.Bold,
+                                    )
+                                }
                             }
                         }
                     }
@@ -242,6 +261,7 @@ fun TitleView() {
 @Composable
 fun ResultScreenPreview() {
     ResultScreen(
+        viewModel = ResultViewModel(app = Application()),
         totalScore = 87.654,
         onReplay = {},
         toHome = {},

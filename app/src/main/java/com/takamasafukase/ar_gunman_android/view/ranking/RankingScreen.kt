@@ -68,6 +68,13 @@ fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .fillMaxSize()
+                                // TODO: 内側のgoldLeaf色の枠線も元から表示しておく様にしたい
+//                                    .padding()
+//                                    .border(
+//                                        width = 5.dp,
+//                                        color = colorResource(id = R.color.goldLeaf),
+//                                        shape = RoundedCornerShape(size = 2.dp)
+//                                    )
                             ) {
                                 CircularProgressIndicator(color = colorResource(id = R.color.paper))
                             }

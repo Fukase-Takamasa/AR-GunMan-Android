@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android
 
+import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -29,6 +30,7 @@ import com.takamasafukase.ar_gunman_android.utility.ErrorAlertDialog
 import com.takamasafukase.ar_gunman_android.view.result.ResultScreen
 import com.takamasafukase.ar_gunman_android.view.setting.SettingScreen
 import com.takamasafukase.ar_gunman_android.view.top.TopScreen
+import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +99,7 @@ fun RootCompose() {
         ) {
             val totalScore = it.arguments?.getString("totalScore") ?: "0.0"
             ResultScreen(
+                viewModel = ResultViewModel(app = Application()),
                 totalScore = totalScore.toDouble(),
                 onReplay = {
                     navController.navigate("game")
