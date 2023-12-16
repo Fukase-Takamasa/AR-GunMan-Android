@@ -7,11 +7,11 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.takamasafukase.ar_gunman_android.Model.AndroidToUnityMessage
-import com.takamasafukase.ar_gunman_android.Model.AndroidToUnityMessageEventType
-import com.takamasafukase.ar_gunman_android.Model.UnityToAndroidMessage
-import com.takamasafukase.ar_gunman_android.Model.UnityToAndroidMessageEventType
-import com.takamasafukase.ar_gunman_android.Model.WeaponType
+import com.takamasafukase.ar_gunman_android.model.AndroidToUnityMessage
+import com.takamasafukase.ar_gunman_android.model.AndroidToUnityMessageEventType
+import com.takamasafukase.ar_gunman_android.model.UnityToAndroidMessage
+import com.takamasafukase.ar_gunman_android.model.UnityToAndroidMessageEventType
+import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.manager.MotionDetector
 import com.takamasafukase.ar_gunman_android.R

@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.takamasafukase.ar_gunman_android.Model.WeaponType
+import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 import com.takamasafukase.ar_gunman_android.view.weaponChange.WeaponListItem

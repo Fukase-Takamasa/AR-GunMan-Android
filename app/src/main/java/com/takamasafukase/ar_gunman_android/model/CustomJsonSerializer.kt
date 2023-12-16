@@ -1,4 +1,4 @@
-package com.takamasafukase.ar_gunman_android.Model
+package com.takamasafukase.ar_gunman_android.model
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException

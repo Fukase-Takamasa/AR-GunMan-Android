@@ -1,6 +1,5 @@
 package com.takamasafukase.ar_gunman_android.view.weaponChange
 
-import android.widget.ImageButton
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.Button
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -24,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.takamasafukase.ar_gunman_android.Model.WeaponType
+import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.R
 
 
