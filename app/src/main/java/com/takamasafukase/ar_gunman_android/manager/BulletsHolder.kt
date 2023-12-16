@@ -31,10 +31,12 @@ class BulletsHolder(
         }
     }
 
-    fun refillBulletsCount() {
+    fun refillBulletsCount(withNewWeaponType: WeaponType? = null) {
         CoroutineScope(Dispatchers.Default).launch {
+            // 武器が変更された時は新しい武器の装弾数でリロード。変更がない場合は現在の武器の装弾数でリロード。
+            val weaponType: WeaponType = withNewWeaponType ?: type
             bulletsCountFlow.emit(
-                type.bulletsCapacity
+                weaponType.bulletsCapacity
             )
         }
     }

@@ -63,7 +63,7 @@ class CurrentWeapon(
         }
         // 武器のセット時の音声を再生
         audioManager.playSound(newType.setSoundResourceId)
-        // 新しいタイプで弾倉を再度初期化（武器によって装弾数などが異なるため）
-        bulletsHolder = BulletsHolder(type = newType)
+        // 新しい武器の装弾数でリロード
+        bulletsHolder.refillBulletsCount(withNewWeaponType = newType)
     }
 }
