@@ -29,6 +29,6 @@ class TimeCountUtil {
     // 少数2桁表示のテキストに変換して返却（少数じゃない部分が1桁の場合は0埋めする）
     fun getTwoDigitTimeCountText(timeCount: Double) : String {
         val strTimeCount = String.format("%.2f", timeCount)
-        return if (timeCount > 10) strTimeCount else "0$strTimeCount"
+        return if (timeCount >= 10) strTimeCount else "0$strTimeCount"
     }
 }
