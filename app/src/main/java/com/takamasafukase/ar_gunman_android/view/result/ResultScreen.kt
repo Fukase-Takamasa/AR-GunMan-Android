@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun ResultScreen(
+    totalScore: Double,
     onReplay: () -> Unit,
     toHome: () -> Unit,
 ) {
@@ -17,6 +18,7 @@ fun ResultScreen(
             .fillMaxSize()
     ) {
         Text("Result")
+        Text("score: $totalScore")
         TextButton(onClick = {
             onReplay()
         }) {

@@ -10,7 +10,11 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.manager.CurrentWeapon
+import com.takamasafukase.ar_gunman_android.manager.ScoreCounter
 import com.takamasafukase.ar_gunman_android.manager.TimeCounter
+import com.takamasafukase.ar_gunman_android.model.WeaponType
+import com.takamasafukase.ar_gunman_android.utility.ScoreCalculator
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 import com.unity3d.player.UnityPlayer
@@ -30,20 +34,31 @@ class GameActivity : ComponentActivity() {
         frameLayout.addView(unityPlayer?.rootView, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 
         val timeCountUtil = TimeCountUtil()
+        val audioManager = AudioManager(context = application)
         // ComposeViewを作成してFrameLayoutに追加
         val composeView = ComposeView(this).apply {
             setContent {
                 GameScreen(
                     viewModel = GameViewModel(
                         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
-                        audioManager = AudioManager(context = application),
-                        timeCounter = TimeCounter(timeCountUtil),
+                        audioManager = audioManager,
+                        timeCounter = TimeCounter(
+                            timeCountUtil = timeCountUtil
+                        ),
                         timeCountUtil = timeCountUtil,
+                        currentWeapon = CurrentWeapon(
+                            initialType = WeaponType.PISTOL,
+                            audioManager = audioManager,
+                        ),
+                        scoreCounter = ScoreCounter(
+                            scoreCalculator = ScoreCalculator()
+                        ),
                     ),
-                    toResult = {
+                    toResult = { totalScore: Double ->
                         // 通知を送信して、MainActivity内のNavHostでresult画面に切り替える
                         val intent = Intent("NAVIGATION_EVENT")
                         intent.putExtra("destination", "result")
+                        intent.putExtra("totalScore", totalScore.toString())
                         LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
 
                         // 上記だけだとこのActivityがMainActivity上に被さったままでresult画面が見えないので終了させる

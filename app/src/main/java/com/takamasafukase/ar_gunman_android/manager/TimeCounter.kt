@@ -35,7 +35,7 @@ class TimeCounter(
     }
 
     fun startTimer() {
-        timerJob = CoroutineScope(Dispatchers.Main).launch {
+        timerJob = CoroutineScope(Dispatchers.Default).launch {
             // 0.01秒間隔で更新されるタイマーを作成
             timeCountUtil.createFlowTimer(GameConst.timerUpdateInterval)
                 .collect { remainingValue: Double ->

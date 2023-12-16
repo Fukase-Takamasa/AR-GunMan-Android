@@ -15,10 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.navigation.NavType
 import androidx.navigation.activity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.view.game.GameActivity
 import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
@@ -85,8 +87,17 @@ fun RootCompose() {
         activity(route = "game") {
             activityClass = GameActivity::class
         }
-        composable("result") {
+        composable(
+            route = "result/{totalScore}",
+            arguments = listOf(
+                navArgument("totalScore") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val totalScore = it.arguments?.getString("totalScore") ?: "0.0"
             ResultScreen(
+                totalScore = totalScore.toDouble(),
                 onReplay = {
                     navController.navigate("game")
                 },
@@ -122,9 +133,16 @@ fun RootCompose() {
             Log.d("Android", "ログAndroid: MainActivity onReceive navigationNotificationHandler")
             val destinationNameText = intent?.getStringExtra("destination")
             if (destinationNameText != null) {
-                Log.d("Android", "ログAndroid: MainActivity onReceive navController.navigate(destinationNameText)")
-                // 通知で受け取ったdestinationに遷移
-                navController.navigate(destinationNameText)
+                if (destinationNameText == "result") {
+                    val totalScore = intent.getStringExtra("totalScore")
+                    Log.d("Android", "ログAndroid: MainActivity onReceive navController.navigate($destinationNameText/$totalScore)を実行します")
+                    // 受け取ったスコアと一緒に遷移指示を流す
+                    navController.navigate("$destinationNameText/$totalScore")
+                }else {
+                    Log.d("Android", "ログAndroid: MainActivity onReceive navController.navigate($destinationNameText)を実行します")
+                    // 通知で受け取ったdestinationに遷移
+                    navController.navigate(destinationNameText)
+                }
             }
         }
     }

@@ -62,8 +62,11 @@ class GameViewModel(
         )
     )
     val state = _state.asStateFlow()
-    private val _showResultScreen = MutableSharedFlow<Unit>()
-    val showResultScreen = _showResultScreen.asSharedFlow()
+
+    // 結果画面で表示する得点と一緒に線に指示を流す
+    private val _showResult = MutableSharedFlow<Double>()
+    val showResult = _showResult.asSharedFlow()
+
     private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
     private var currentWeaponType = WeaponType.PISTOL
 
@@ -123,7 +126,10 @@ class GameViewModel(
 
                         viewModelScope.launch {
                             // 遷移指示を流す
-                            _showResultScreen.emit(Unit)
+                            _showResult.emit(
+                                // 結果画面で表示する得点も一緒に渡す
+                                scoreCounter.currentTotalScore.value
+                            )
                         }
                     }, 1500)
                 }

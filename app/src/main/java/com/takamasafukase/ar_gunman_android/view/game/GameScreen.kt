@@ -33,16 +33,16 @@ import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 @Composable
 fun GameScreen(
     viewModel: GameViewModel,
-    toResult: () -> Unit,
+    toResult: (totalScore: Double) -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val state by viewModel.state.collectAsState()
-    val showResultEvent = viewModel.showResultScreen.collectAsState(initial = null)
+    val showResultEvent = viewModel.showResult.collectAsState(initial = null)
 
     LaunchedEffect(showResultEvent.value) {
         showResultEvent.value?.let {
-            toResult()
+            toResult(it)
         }
     }
 
