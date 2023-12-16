@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.manager
 
+import com.takamasafukase.ar_gunman_android.const.GameConst
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ import kotlinx.coroutines.launch
 class TimeCounter(
     private val timeCountUtil: TimeCountUtil
 ) {
-    private val countChangedFlow = MutableStateFlow(value = 30.00)
+    private val countChangedFlow = MutableStateFlow(value = GameConst.timeCount)
     val countChanged: Flow<Double> = countChangedFlow.asStateFlow()
 
     private val countEndedFlow = MutableSharedFlow<Unit>()
@@ -36,7 +37,7 @@ class TimeCounter(
     fun startTimer() {
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             // 0.01秒間隔で更新されるタイマーを作成
-            timeCountUtil.createFlowTimer(10)
+            timeCountUtil.createFlowTimer(GameConst.timerUpdateInterval)
                 .collect { remainingValue: Double ->
                     // 返却された残り時間の値を流す
                     countChangedFlow.value = remainingValue

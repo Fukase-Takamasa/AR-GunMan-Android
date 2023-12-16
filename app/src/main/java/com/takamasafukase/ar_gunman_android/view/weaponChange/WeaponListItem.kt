@@ -31,15 +31,6 @@ fun WeaponListItem(
     type: WeaponType,
     onTapItem: () -> Unit,
 ) {
-    // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
-    val imageResourceId = when (type) {
-        WeaponType.PISTOL -> R.drawable.pistol
-        WeaponType.BAZOOKA -> R.drawable.rocket_launcher
-        WeaponType.RIFLE -> R.drawable.rifle
-        WeaponType.SHOT_GUN -> R.drawable.shot_gun
-        WeaponType.SNIPER_RIFLE -> R.drawable.sniper_rifle
-        WeaponType.MINI_GUN -> R.drawable.mini_gun
-    }
     Box {
         IconButton(
             modifier = Modifier,
@@ -48,7 +39,7 @@ fun WeaponListItem(
             }
         ) {
             Image(
-                painter = painterResource(id = imageResourceId),
+                painter = painterResource(id = type.weaponIconResourceId),
                 contentDescription = "Weapon icon",
                 colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
                 alpha = if (type == WeaponType.PISTOL) 1f else 0.5f,

@@ -8,8 +8,8 @@ import android.util.Log
 
 class MotionDetector(
     private val sensorManager: SensorManager,
-    val onDetectPistolFiringMotion: () -> Unit,
-    val onDetectPistolReloadingMotion: () -> Unit,
+    val onDetectWeaponFiringMotion: () -> Unit,
+    val onDetectWeaponReloadingMotion: () -> Unit,
     ) : SensorEventListener {
     // 発射動作の判定では加速度＋ジャイロも使うので、最新の値としてここに格納して使う
     private var gyroCompositeValue = 0f
@@ -79,7 +79,7 @@ class MotionDetector(
             // 前回の発射動作検知から50回のアップデートが経過しているかチェック
             (sensorUpdatedCount - previousDetectFiringMotionCount >= 50)) {
             previousDetectFiringMotionCount = sensorUpdatedCount
-            onDetectPistolFiringMotion()
+            onDetectWeaponFiringMotion()
         }
     }
 
@@ -90,7 +90,7 @@ class MotionDetector(
             // 前回のリロード動作検知から50回のアップデートが経過しているかチェック
             (sensorUpdatedCount - previousDetectReloadingMotionCount >= 50)) {
             previousDetectReloadingMotionCount = sensorUpdatedCount
-            onDetectPistolReloadingMotion()
+            onDetectWeaponReloadingMotion()
         }
     }
 

@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.utility
 
+import com.takamasafukase.ar_gunman_android.const.GameConst
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +12,7 @@ class TimeCountUtil {
     // RxSwiftのObservable<Int>.interval的なものをFlowで生成して返却
     fun createFlowTimer(interval: Long): Flow<Double> = flow {
         // 30秒のミリ秒
-        val timerDuration = 30 * 1000L
+        val timerDuration = GameConst.timeCount * 1000L
         // 開始時刻
         val startTime = System.nanoTime()
 

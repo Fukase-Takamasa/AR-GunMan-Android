@@ -13,13 +13,3 @@ enum class AndroidToUnityMessageEventType {
     SHOW_WEAPON,
     FIRE_WEAPON,
 }
-
-@Serializable(with = WeaponTypeSerializer::class)
-enum class WeaponType {
-    PISTOL,
-    BAZOOKA,
-    RIFLE,
-    SHOT_GUN,
-    SNIPER_RIFLE,
-    MINI_GUN,
-}

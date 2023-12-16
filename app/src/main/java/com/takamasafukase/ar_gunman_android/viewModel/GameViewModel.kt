@@ -18,17 +18,13 @@ import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
 import com.takamasafukase.ar_gunman_android.manager.TimeCounter
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.unity3d.player.UnityPlayer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
@@ -50,15 +46,14 @@ class GameViewModel(
     private val timeCounter: TimeCounter,
     private val timeCountUtil: TimeCountUtil,
 ) : ViewModel(), UnityToAndroidMessenger.MessageReceiverFromUnity {
-
     private lateinit var motionDetector: MotionDetector
     private val _state = MutableStateFlow(
         GameViewState(
             isLoading = true,
             isShowTutorialDialog = false,
             isShowWeaponChangeDialog = false,
-            timeCountText = "30.00",
-            bulletsCountImageResourceId = R.drawable.bullets_7,
+            timeCountText = "",
+            bulletsCountImageResourceId = 0,
         )
     )
     val state = _state.asStateFlow()
@@ -136,14 +131,8 @@ class GameViewModel(
     fun onCloseWeaponChangeDialog() {
         _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
 
-        // TODO: あとでSwift版みたいにenumに紐づけてどこかのファイルに置いて、メソッドで取得できる様にしたい
-        // TODO: 武器が変更されずにただcloseやエッジスワイプで閉じられた時も現在の武器の表示音声を鳴らす
-        val weaponSetSoundResourceId = when (currentWeaponType) {
-            WeaponType.PISTOL -> R.raw.pistol_slide
-            else -> 0
-        }
-        // 選択された武器に対応した音声を再生
-        audioManager.playSound(weaponSetSoundResourceId)
+        // 現在の武器の表示音声を鳴らす（武器が変更されずにただcloseやエッジスワイプで閉じられた時も含めるためここで呼び出している）
+        audioManager.playSound(currentWeaponType.setSoundResourceId)
     }
 
     fun onSelectWeapon(selectedWeapon: WeaponType) {
@@ -206,9 +195,9 @@ class GameViewModel(
     private fun handleMotionDetector(sensorManager: SensorManager) {
         motionDetector = MotionDetector(
             sensorManager = sensorManager,
-            onDetectPistolFiringMotion = {
+            onDetectWeaponFiringMotion = {
                 Log.d("Android", "ログAndroid: onDetectPistolFiringMotion")
-                audioManager.playSound(R.raw.pistol_fire)
+                audioManager.playSound(currentWeaponType.firingSoundResourceId)
 
                 // ピストル射撃命令のメッセージを作成
                 val toUnityMessage = AndroidToUnityMessage(
@@ -220,9 +209,9 @@ class GameViewModel(
                 // Unityへ通知を送る
                 UnityPlayer.UnitySendMessage("XR Origin", "OnReceiveMessageFromAndroid", jsonString)
             },
-            onDetectPistolReloadingMotion = {
+            onDetectWeaponReloadingMotion = {
                 Log.d("Android", "ログAndroid: onDetectPistolReloadingMotion")
-                audioManager.playSound(R.raw.pistol_reload)
+                audioManager.playSound(currentWeaponType.reloadSoundResourceId)
                 // TODO: リロード後の処理
             }
         )
