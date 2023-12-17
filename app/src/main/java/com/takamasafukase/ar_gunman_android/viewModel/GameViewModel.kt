@@ -120,9 +120,6 @@ class GameViewModel(
 
                     // 1.5秒後に結果画面に遷移指示を流す
                     Handler(Looper.getMainLooper()).postDelayed({
-                        // 結果画面と名前登録ダイアログの出現音声を再生
-                        audioManager.playSound(R.raw.ranking_appear)
-
                         viewModelScope.launch {
                             // 遷移指示を流す
                             _showResult.emit(

@@ -36,13 +36,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val audioManager = AudioManager(context = application)
+
         setContent {
             ARGunManAndroidTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Transparent
                 ) {
-                    RootCompose()
+                    RootCompose(audioManager = audioManager)
                 }
             }
         }
@@ -50,7 +52,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun RootCompose() {
+fun RootCompose(
+    audioManager: AudioManager
+) {
     val navController = rememberNavController()
     val context = LocalContext.current
     var receivedErrorMessage by remember { mutableStateOf<String?>(null) }
@@ -60,9 +64,7 @@ fun RootCompose() {
         startDestination = "top",
     ) {
         composable("top") {
-            val viewModel = TopViewModel(
-                audioManager = AudioManager(context)
-            )
+            val viewModel = TopViewModel(audioManager = audioManager)
             TopScreen(
                 viewModel = viewModel,
                 toSetting = {
@@ -99,7 +101,10 @@ fun RootCompose() {
         ) {
             val totalScore = it.arguments?.getString("totalScore") ?: "0.0"
             ResultScreen(
-                viewModel = ResultViewModel(app = Application()),
+                viewModel = ResultViewModel(
+                    app = Application(),
+                    audioManager = audioManager,
+                ),
                 totalScore = totalScore.toDouble(),
                 onReplay = {
                     navController.navigate("game")

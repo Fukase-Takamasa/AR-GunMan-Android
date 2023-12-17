@@ -23,6 +23,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
-import com.takamasafukase.ar_gunman_android.entity.Ranking
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
@@ -54,6 +55,10 @@ fun ResultScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.onViewDidAppear()
+    }
 
     Surface(
         modifier = Modifier
@@ -268,7 +273,10 @@ fun TitleView() {
 @Composable
 fun ResultScreenPreview() {
     ResultScreen(
-        viewModel = ResultViewModel(app = Application()),
+        viewModel = ResultViewModel(
+            app = Application(),
+            audioManager = AudioManager(Application())
+        ),
         totalScore = 87.654,
         onReplay = {},
         toHome = {},
