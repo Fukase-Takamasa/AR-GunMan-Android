@@ -61,22 +61,21 @@ fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
                                 .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                         ) {
                             TitleView(onClose)
-                            RankingListView(list = state.rankings)
-                        }
-                        if (state.rankings.isEmpty()) {
                             Box(
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .fillMaxSize()
-                                // TODO: 内側のgoldLeaf色の枠線も元から表示しておく様にしたい
-//                                    .padding()
-//                                    .border(
-//                                        width = 5.dp,
-//                                        color = colorResource(id = R.color.goldLeaf),
-//                                        shape = RoundedCornerShape(size = 2.dp)
-//                                    )
+                                    .border(
+                                        width = 7.dp,
+                                        color = colorResource(id = R.color.goldLeaf),
+                                        shape = RoundedCornerShape(size = 3.dp)
+                                    )
                             ) {
-                                CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                                if (state.rankings.isEmpty()) {
+                                    CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                                } else {
+                                    RankingListView(list = state.rankings)
+                                }
                             }
                         }
                     }
@@ -142,14 +141,7 @@ fun BackgroundBorderView() {
 // リストビューの部分
 @Composable
 fun RankingListView(list: List<Ranking>) {
-    LazyColumn(
-        modifier = Modifier
-            .border(
-                width = 7.dp,
-                color = colorResource(id = R.color.goldLeaf),
-                shape = RoundedCornerShape(size = 3.dp)
-            )
-    ) {
+    LazyColumn {
         itemsIndexed(list) { index, ranking ->
             if (index == 0) {
                 Spacer(modifier = Modifier.height(10.dp))

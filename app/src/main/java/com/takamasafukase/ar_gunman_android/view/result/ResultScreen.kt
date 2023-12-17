@@ -83,21 +83,20 @@ fun ResultScreen(
                     modifier = Modifier
                         .width((screenWidth * 0.465).dp)
                 ) {
-                    RankingListView(list = state.rankings)
-                    if (state.rankings.isEmpty()) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                // TODO: あとでRankingListViewは枠線無しのリスト部分だけにした方が汎用性高いかも？
-                                // ローディング時も同じ内側の枠線を表示しておく
-                                .border(
-                                    width = 7.dp,
-                                    color = colorResource(id = R.color.goldLeaf),
-                                    shape = RoundedCornerShape(size = 3.dp)
-                                )
-                        ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .border(
+                                width = 7.dp,
+                                color = colorResource(id = R.color.goldLeaf),
+                                shape = RoundedCornerShape(size = 3.dp)
+                            )
+                    ) {
+                        if (state.rankings.isEmpty()) {
                             CircularProgressIndicator(color = colorResource(id = R.color.paper))
+                        } else {
+                            RankingListView(list = state.rankings)
                         }
                     }
                 }
