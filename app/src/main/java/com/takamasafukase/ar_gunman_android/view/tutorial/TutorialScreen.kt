@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.const.TutorialConst
 import com.takamasafukase.ar_gunman_android.utility.CustomDialog
+import com.takamasafukase.ar_gunman_android.utility.ImageSwitcherAnimation
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,10 +83,9 @@ fun TutorialScreen(
                         modifier = Modifier
                             .padding(top = 12.dp, bottom = 12.dp)
                     ) {
-                        Image(
-                            // TODO: あとでAnimatedImageSwitcherに変えてパラパラアニメーションする
-                            painter = painterResource(id = content.imageResourceIds[0]),
-                            contentDescription = "Tutorial image",
+                        ImageSwitcherAnimation(
+                            imageResourceIds = content.imageResourceIds,
+                            duration = 400,
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(bottom = 4.dp)
