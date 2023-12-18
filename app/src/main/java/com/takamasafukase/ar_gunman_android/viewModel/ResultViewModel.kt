@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 
 data class ResultViewState(
     val rankings: List<Ranking>,
+    val isShowNameRegisterDialog: Boolean,
+    val isShowButtons: Boolean,
 )
 
 class ResultViewModel(
@@ -27,14 +29,12 @@ class ResultViewModel(
     private val _state = MutableStateFlow(
         ResultViewState(
             rankings = listOf(),
+            isShowNameRegisterDialog = false,
+            isShowButtons = false,
         )
     )
     val state = _state.asStateFlow()
     private val rankingRepository = RankingRepository()
-    private val showNameRegisterDialogFlow = MutableStateFlow(value = false)
-    val showNameRegisterDialogEvent = showNameRegisterDialogFlow.asStateFlow()
-    private val showButtonsFlow = MutableStateFlow(value = false)
-    val showButtonsEvent = showButtonsFlow.asStateFlow()
 
     init {
         getRankings()
@@ -46,23 +46,16 @@ class ResultViewModel(
 
         Handler(Looper.getMainLooper()).postDelayed({
             // 0.5秒後に名前登録ダイアログを表示させる指示を流す
-            viewModelScope.launch {
-                showNameRegisterDialogFlow.emit(true)
-            }
+            _state.value = _state.value.copy(isShowNameRegisterDialog = true)
         }, 500)
     }
 
     fun onCloseNameRegisterDialog() {
-        viewModelScope.launch {
-            showNameRegisterDialogFlow.emit(false)
-            DebugLogUtil.print("showNameRegisterDialogFlow.emit(false)")
-        }
+        _state.value = _state.value.copy(isShowNameRegisterDialog = false)
 
         Handler(Looper.getMainLooper()).postDelayed({
             // 0.1秒後にボタンの出現アニメーションを開始させる
-            viewModelScope.launch {
-                showButtonsFlow.emit(true)
-            }
+            _state.value = _state.value.copy(isShowButtons = true)
         }, 100)
     }
 
