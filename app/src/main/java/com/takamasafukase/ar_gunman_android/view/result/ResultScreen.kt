@@ -26,12 +26,10 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,17 +42,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
-import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
 import com.takamasafukase.ar_gunman_android.view.nameRegister.NameRegisterScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
-import kotlinx.coroutines.delay
 
 @Composable
 fun ResultScreen(
@@ -259,6 +254,7 @@ fun AnimatedButtonsAndIcon(
     onTapReplay: () -> Unit,
     onTapHome: () -> Unit,
 ) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp
     val buttonAlpha = animateFloatAsState(
         targetValue = if (isShowButtons) 1f else 0f,
         label = "",
@@ -283,29 +279,16 @@ fun AnimatedButtonsAndIcon(
             painter = painterResource(id = WeaponType.PISTOL.weaponIconResourceId),
             contentDescription = "Weapon icon",
             colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-            alpha = 1f,
+            modifier = Modifier
+                .padding(end = (screenWidth * 0.01).dp)
         )
-
         AnimatedVisibility(
             visible = isShowButtons,
             enter = expandHorizontally(
                 animationSpec = tween(durationMillis = 600)
             ),
             modifier = Modifier
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .width((LocalConfiguration.current.screenWidthDp * 0.02).dp)
-            )
-        }
-
-        AnimatedVisibility(
-            visible = isShowButtons,
-            enter = expandHorizontally(
-                animationSpec = tween(durationMillis = 600)
-            ),
-            modifier = Modifier
-                .width(if (isShowButtons) Dp.Unspecified else 0.dp)
+                .padding(start = (screenWidth * 0.01).dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.SpaceEvenly,
