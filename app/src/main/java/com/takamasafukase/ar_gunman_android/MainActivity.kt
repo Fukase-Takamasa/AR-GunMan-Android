@@ -30,6 +30,7 @@ import com.takamasafukase.ar_gunman_android.view.result.ResultScreen
 import com.takamasafukase.ar_gunman_android.view.setting.SettingScreen
 import com.takamasafukase.ar_gunman_android.view.top.TopScreen
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
+import com.takamasafukase.ar_gunman_android.viewModel.SettingViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
         val audioManager = AudioManager(context = application)
         val topViewModel = TopViewModel(audioManager = audioManager)
         val resultViewModel = ResultViewModel(app = application, audioManager)
+        val settingViewModel = SettingViewModel()
 
         setContent {
             ARGunManAndroidTheme {
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     RootCompose(
                         topViewModel = topViewModel,
                         resultViewModel = resultViewModel,
+                        settingViewModel = settingViewModel,
                     )
                 }
             }
@@ -59,6 +62,7 @@ class MainActivity : ComponentActivity() {
 fun RootCompose(
     topViewModel: TopViewModel,
     resultViewModel: ResultViewModel,
+    settingViewModel: SettingViewModel,
 ) {
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -81,12 +85,7 @@ fun RootCompose(
         }
         composable("setting") {
             SettingScreen(
-                toDeveloperContact = {
-                    // TODO: WebViewの表示
-                },
-                toPrivacyPolicy = {
-                    // TODO: WebViewの表示
-                },
+                viewModel = settingViewModel,
                 onClose = {
                     navController.navigate("top")
                 }

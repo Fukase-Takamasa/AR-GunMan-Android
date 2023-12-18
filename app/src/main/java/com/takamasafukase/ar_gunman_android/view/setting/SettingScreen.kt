@@ -8,9 +8,11 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -20,15 +22,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.viewModel.SettingViewModel
 
 @Composable
 fun SettingScreen(
-    toDeveloperContact: () -> Unit,
-    toPrivacyPolicy: () -> Unit,
+    viewModel: SettingViewModel,
     onClose: () -> Unit,
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
+    val uriHandler = LocalUriHandler.current
+
+    LaunchedEffect(Unit) {
+        viewModel.openUrlInBrowserEvent.collect {
+            uriHandler.openUri(it)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.closePageEvent.collect {
+            onClose()
+        }
+    }
 
     Surface(
         color = colorResource(id = R.color.goldLeaf),
@@ -53,7 +67,7 @@ fun SettingScreen(
                     .fillMaxWidth()
             ) {
                 TextButton(onClick = {
-                    toDeveloperContact()
+                    viewModel.onTapContactDeveloperButton()
                 }) {
                     Text(
                         text = "Contact Developer",
@@ -64,7 +78,7 @@ fun SettingScreen(
                     )
                 }
                 TextButton(onClick = {
-                    toPrivacyPolicy()
+                    viewModel.onTapPrivacyPolicyButton()
                 }) {
                     Text(
                         text = "Privacy Policy",
@@ -76,7 +90,7 @@ fun SettingScreen(
                 }
             }
             TextButton(onClick = {
-                onClose()
+                viewModel.onTapBackButton()
             }) {
                 Text(
                     text = "Back",
@@ -93,8 +107,7 @@ fun SettingScreen(
 @Composable
 fun ResultScreenPreview() {
     SettingScreen(
-        toDeveloperContact = {},
-        toPrivacyPolicy = {},
+        viewModel = SettingViewModel(),
         onClose = {},
     )
 }
