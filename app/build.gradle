@@ -72,4 +72,6 @@ dependencies {
     implementation project(':unityLibrary:xrmanifest.androidlib')
     implementation fileTree(dir: project(':unityLibrary').getProjectDir().toString() + ('\\libs'), include: ['*.jar', '*.aar'])
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2"
+    implementation 'androidx.compose.foundation:foundation:1.4.3'
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.30.1"
 }
