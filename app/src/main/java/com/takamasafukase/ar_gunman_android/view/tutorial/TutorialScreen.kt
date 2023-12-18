@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -19,9 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,12 +34,11 @@ import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.const.TutorialConst
 import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 import com.takamasafukase.ar_gunman_android.utility.ImageSwitcherAnimation
-import com.takamasafukase.ar_gunman_android.viewModel.TutorialViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TutorialScreen(
-    viewModel: TutorialViewModel,
     onClose: () -> Unit,
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
@@ -53,24 +48,8 @@ fun TutorialScreen(
     val dialogHeight = pagerViewHeight + pageIndicatorHeight + buttonHeight
     val dialogWidth = pagerViewHeight * 1.33
     val pagerState = rememberPagerState()
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { currentPage ->
-            viewModel.onPageChanged(currentPage)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.scrollPageToEvent.collect { targetPage ->
-            pagerState.scrollToPage(targetPage)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.closeDialogEvent.collect {
-            onClose()
-        }
-    }
+    // ButtonClickイベント内など、Composableではない通常のUIスレッドとして扱われる部分でCoroutineを使う場合にこれを使う。
+    val rememberCoroutineScope = rememberCoroutineScope()
 
     CustomDialog(
         onDismissRequest = onClose,
@@ -158,7 +137,15 @@ fun TutorialScreen(
                 // ボタン
                 TextButton(
                     onClick = {
-                        viewModel.onTapButton()
+                        if (pagerState.currentPage == 2) {
+                            onClose()
+                        } else {
+                            rememberCoroutineScope.launch {
+                                pagerState.scrollToPage(
+                                    page = pagerState.currentPage + 1
+                                )
+                            }
+                        }
                     },
                 ) {
                     Box(
@@ -177,8 +164,9 @@ fun TutorialScreen(
                                 shape = RoundedCornerShape(20.dp)
                             )
                     ) {
+                        val buttonText = if (pagerState.currentPage == 2) "OK" else "NEXT"
                         Text(
-                            text = viewModel.buttonText.collectAsState().value,
+                            text = buttonText,
                             color = colorResource(id = R.color.blackSteel),
                             fontSize = (screenHeight * 0.06).sp,
                             fontWeight = FontWeight.Bold,
@@ -196,7 +184,6 @@ fun TutorialScreen(
 @Composable
 fun TutorialScreenPreview() {
     TutorialScreen(
-        viewModel = TutorialViewModel(),
         onClose = {},
     )
 }
