@@ -15,12 +15,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.view.tutorial.TutorialScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingScreen
+import com.takamasafukase.ar_gunman_android.view.result.ResultScreen
 import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
+import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
 import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
 
 @Composable
@@ -129,12 +134,12 @@ fun TitleText(screenHeight: Int) {
     ) {
         Text(
             text = "AR",
-            fontSize = (screenHeight * 0.2).sp, // iOSだと固定で100
+            fontSize = (screenHeight * 0.25).sp, // iOSだと固定で100
             fontWeight = FontWeight.Bold,
         )
         Text(
             text = "-GunMan",
-            fontSize = (screenHeight * 0.16).sp,  // iOSだと固定で80
+            fontSize = (screenHeight * 0.20).sp,  // iOSだと固定で80
             fontWeight = FontWeight.Bold,
         )
     }
@@ -150,7 +155,7 @@ fun SettingButton(
     }) {
         Text(
             text = "Settings",
-            fontSize = (screenHeight * 0.056).sp, // iOSだと固定で28
+            fontSize = (screenHeight * 0.08).sp, // iOSだと固定で28
             fontWeight = FontWeight.Bold,
             style = TextStyle(textDecoration = TextDecoration.Underline),
             color = colorResource(id = R.color.blackSteel)
@@ -166,7 +171,7 @@ fun CustomIconButton(
     onTap: () -> Unit,
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         TargetImage(
             resourceId = iconResourceId,
@@ -177,7 +182,7 @@ fun CustomIconButton(
         }) {
             Text(
                 text = title,
-                fontSize = (screenHeight * 0.1).sp, // iOSだと固定で50
+                fontSize = (screenHeight * 0.12).sp, // iOSだと固定で50
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(textDecoration = TextDecoration.Underline),
                 color = colorResource(id = R.color.blackSteel)
@@ -204,5 +209,15 @@ fun TargetImage(resourceId: Int, screenHeight: Int) {
         contentDescription = "Target icon",
         modifier = Modifier
             .size(size = size)
+    )
+}
+
+@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@Composable
+fun TopScreenPreview() {
+    TopScreen(
+        viewModel = TopViewModel(AudioManager(Application())),
+        toGame = {},
+        toSetting = {}
     )
 }
