@@ -50,6 +50,8 @@ import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
+import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
+import com.takamasafukase.ar_gunman_android.view.nameRegister.NameRegisterScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
 import kotlinx.coroutines.delay
@@ -64,15 +66,26 @@ fun ResultScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state by viewModel.state.collectAsState()
+    var isShowNameRegisterDialog by remember { mutableStateOf(false) }
     var isShowButtons by remember { mutableStateOf(false) }
+    val showNameRegisterDialogEvent = viewModel.showNameRegisterDialogEvent.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.onViewDidAppear()
     }
 
-    LaunchedEffect(Unit) {
-        delay(1500)
-        isShowButtons = true
+    LaunchedEffect(showNameRegisterDialogEvent.value) {
+        DebugLogUtil.print("LaunchedEffect")
+        viewModel.showNameRegisterDialogEvent.collect {
+            DebugLogUtil.print("collect: $it")
+            isShowNameRegisterDialog = it
+        }
+    }
+
+    LaunchedEffect(viewModel.showButtonsEvent) {
+        viewModel.showButtonsEvent.collect {
+            isShowButtons = it
+        }
     }
 
     Surface(
@@ -174,6 +187,19 @@ fun ResultScreen(
                     }
                 }
             }
+        }
+
+        if (isShowNameRegisterDialog) {
+            DebugLogUtil.print("state.isShowNameRegisterDialog=trueなのでダイアログ表示させる")
+            NameRegisterScreen(
+                totalScore = totalScore,
+                onClose = {
+                    DebugLogUtil.print("onCloseなのでviewModel.onCloseNameRegisterDialog()よぶ")
+                    viewModel.onCloseNameRegisterDialog()
+                }
+            )
+        }else {
+            DebugLogUtil.print("state.isShowNameRegisterDialog=falseなのでダイアログ表示させない")
         }
     }
 }
