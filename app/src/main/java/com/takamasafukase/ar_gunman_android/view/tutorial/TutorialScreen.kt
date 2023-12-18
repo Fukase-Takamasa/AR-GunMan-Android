@@ -48,7 +48,6 @@ fun TutorialScreen(
     val dialogHeight = pagerViewHeight + pageIndicatorHeight + buttonHeight
     val dialogWidth = pagerViewHeight * 1.33
     val pagerState = rememberPagerState()
-    // ButtonClickイベント内など、Composableではない通常のUIスレッドとして扱われる部分でCoroutineを使う場合にこれを使う。
     val rememberCoroutineScope = rememberCoroutineScope()
 
     CustomDialog(
@@ -63,6 +62,7 @@ fun TutorialScreen(
                 modifier = Modifier
                     .background(Color.Transparent)
             ) {
+
                 // ページャービュー
                 HorizontalPager(
                     pageCount = TutorialConst.pageContents.size,
@@ -112,6 +112,7 @@ fun TutorialScreen(
                         )
                     }
                 }
+
                 // ページインジケーター
                 Row(
                     horizontalArrangement = Arrangement.Center,
@@ -134,14 +135,18 @@ fun TutorialScreen(
                         )
                     }
                 }
+
                 // ボタン
                 TextButton(
                     onClick = {
                         if (pagerState.currentPage == 2) {
+                            // ダイアログを閉じる
                             onClose()
                         } else {
+                            // ButtonClickイベント内など、Composableではない通常のUIスレッドとして扱われる部分でCoroutineを使う場合にこれを使う。
                             rememberCoroutineScope.launch {
-                                pagerState.scrollToPage(
+                                // 次のページへスクロールさせる
+                                pagerState.animateScrollToPage(
                                     page = pagerState.currentPage + 1
                                 )
                             }
