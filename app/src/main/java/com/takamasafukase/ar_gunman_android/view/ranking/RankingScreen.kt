@@ -36,7 +36,7 @@ fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
     CustomDialog(
         onDismissRequest = onClose,
         size = DpSize(
-            width = Dp((screenWidth * 0.6).toFloat()),
+            width = Dp((screenWidth * 0.5).toFloat()),
             height = Dp((screenHeight * 0.8).toFloat())
         ),
         content = {
