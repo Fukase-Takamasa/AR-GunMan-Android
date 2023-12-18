@@ -1,6 +1,10 @@
 package com.takamasafukase.ar_gunman_android.view.result
 
 import android.app.Application
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,12 +26,15 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
@@ -37,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
@@ -44,6 +52,7 @@ import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun ResultScreen(
@@ -55,9 +64,15 @@ fun ResultScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state by viewModel.state.collectAsState()
+    var isShowButtons by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.onViewDidAppear()
+    }
+
+    LaunchedEffect(Unit) {
+        delay(1500)
+        isShowButtons = true
     }
 
     Surface(
@@ -146,52 +161,16 @@ fun ResultScreen(
                                 )
                             }
                         }
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 3.dp)
-                                .border(
-                                    width = 7.dp,
-                                    color = colorResource(id = R.color.goldLeaf),
-                                    shape = RoundedCornerShape(size = 3.dp)
-                                )
-                                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(id = WeaponType.PISTOL.weaponIconResourceId),
-                                contentDescription = "Weapon icon",
-                                colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
-                                alpha = 1f,
-                                modifier = Modifier
-                            )
-                            Column(
-                                verticalArrangement = Arrangement.SpaceEvenly,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxHeight()
-                            ) {
-                                TextButton(onClick = {
-                                    onReplay()
-                                }) {
-                                    Text(
-                                        text = "REPLAY",
-                                        color = colorResource(id = R.color.paper),
-                                        fontSize = 25.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                }
-                                TextButton(onClick = {
-                                    toHome()
-                                }) {
-                                    Text(
-                                        text = "HOME",
-                                        color = colorResource(id = R.color.paper),
-                                        fontSize = 25.sp,
-                                        fontWeight = FontWeight.Bold,
-                                    )
-                                }
+
+                        AnimatedButtonsAndIcon(
+                            isShowButtons = isShowButtons,
+                            onTapReplay = {
+                                onReplay()
+                            },
+                            onTapHome = {
+                                toHome()
                             }
-                        }
+                        )
                     }
                 }
             }
@@ -265,6 +244,93 @@ fun TitleView() {
                     .wrapContentSize(align = Alignment.Center, unbounded = true)
                     .align(Alignment.Center)
             )
+        }
+    }
+}
+
+@Composable
+fun AnimatedButtonsAndIcon(
+    isShowButtons: Boolean,
+    onTapReplay: () -> Unit,
+    onTapHome: () -> Unit,
+) {
+    val buttonAlpha = animateFloatAsState(
+        targetValue = if (isShowButtons) 1f else 0f,
+        label = "",
+        animationSpec = tween(
+            durationMillis = 600,
+        )
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 3.dp)
+            .border(
+                width = 7.dp,
+                color = colorResource(id = R.color.goldLeaf),
+                shape = RoundedCornerShape(size = 3.dp)
+            )
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp)
+    ) {
+        Image(
+            painter = painterResource(id = WeaponType.PISTOL.weaponIconResourceId),
+            contentDescription = "Weapon icon",
+            colorFilter = ColorFilter.tint(colorResource(id = R.color.paper)),
+            alpha = 1f,
+        )
+
+        AnimatedVisibility(
+            visible = isShowButtons,
+            enter = expandHorizontally(
+                animationSpec = tween(durationMillis = 600)
+            ),
+            modifier = Modifier
+        ) {
+            Spacer(
+                modifier = Modifier
+                    .width((LocalConfiguration.current.screenWidthDp * 0.02).dp)
+            )
+        }
+
+        AnimatedVisibility(
+            visible = isShowButtons,
+            enter = expandHorizontally(
+                animationSpec = tween(durationMillis = 600)
+            ),
+            modifier = Modifier
+                .width(if (isShowButtons) Dp.Unspecified else 0.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.SpaceEvenly,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    // アニメーション付きの値をセット（0.2秒で0f => 1fに変化）
+                    .alpha(buttonAlpha.value)
+            ) {
+                TextButton(onClick = {
+                    onTapReplay()
+                }) {
+                    Text(
+                        text = "REPLAY",
+                        color = colorResource(id = R.color.paper),
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+                TextButton(onClick = {
+                    onTapHome()
+                }) {
+                    Text(
+                        text = "HOME",
+                        color = colorResource(id = R.color.paper),
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            }
         }
     }
 }
