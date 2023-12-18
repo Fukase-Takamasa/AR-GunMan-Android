@@ -22,6 +22,7 @@ import com.takamasafukase.ar_gunman_android.view.tutorial.TutorialScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingScreen
 import com.takamasafukase.ar_gunman_android.viewModel.RankingViewModel
 import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
+import com.takamasafukase.ar_gunman_android.viewModel.TutorialViewModel
 
 @Composable
 fun TopScreen(
@@ -114,6 +115,7 @@ fun TopScreen(
         // チュートリアルダイアログ
         if (state.value.isShowTutorialDialog) {
             TutorialScreen(
+                viewModel = TutorialViewModel(),
                 onClose = {
                     viewModel.onCloseTutorialDialog()
                 }
