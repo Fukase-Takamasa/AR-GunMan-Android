@@ -40,8 +40,6 @@ fun TutorialScreen(
 ) {
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val pagerViewHeight = screenHeight * 0.65
-    val pageTitleTextHeight = screenHeight * 0.084
-    val pageDescriptionTextHeight = screenHeight * 0.096
     val pageIndicatorHeight = screenHeight * 0.072
     val buttonHeight = screenHeight * 0.15
     val dialogHeight = pagerViewHeight + pageIndicatorHeight + buttonHeight
@@ -82,7 +80,7 @@ fun TutorialScreen(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier
-                            .padding(top = 12.dp, bottom = 16.dp)
+                            .padding(top = 12.dp, bottom = 12.dp)
                     ) {
                         Image(
                             // TODO: あとでAnimatedImageSwitcherに変えてパラパラアニメーションする
@@ -95,17 +93,17 @@ fun TutorialScreen(
                         Text(
                             text = content.titleText,
                             color = colorResource(id = R.color.blackSteel),
-                            fontSize = (screenHeight * 0.06).sp,
+                            fontSize = (screenHeight * 0.076).sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .height(pageTitleTextHeight.dp)
+                                .padding(bottom = 8.dp)
                         )
                         Text(
                             text = content.descriptionText,
                             color = colorResource(id = R.color.blackSteel),
                             fontSize = (screenHeight * 0.04).sp,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .height(pageDescriptionTextHeight.dp)
                         )
                     }
                 }
