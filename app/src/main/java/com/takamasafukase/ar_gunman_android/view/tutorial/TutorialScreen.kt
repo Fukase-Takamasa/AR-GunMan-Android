@@ -84,6 +84,7 @@ fun TutorialScreen(
                 modifier = Modifier
                     .background(Color.Transparent)
             ) {
+                // ページャービュー
                 HorizontalPager(
                     pageCount = TutorialConst.pageContents.size,
                     state = pagerState,
@@ -132,13 +133,29 @@ fun TutorialScreen(
                         )
                     }
                 }
-                Spacer(
+                // ページインジケーター
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(
-                            width = 60.dp,
-                            height = pageIndicatorHeight.dp
+                        .height(pageIndicatorHeight.dp)
+                ) {
+                    repeat(TutorialConst.pageContents.size) { index ->
+                        val color = if (pagerState.currentPage == index)
+                            colorResource(id = R.color.paper)
+                        else
+                            Color.Gray
+
+                        Box(
+                            modifier = Modifier
+                                .padding(2.dp)
+                                .clip(CircleShape)
+                                .background(color = color)
+                                .size(8.dp)
                         )
-                )
+                    }
+                }
+                // ボタン
                 TextButton(
                     onClick = {
                         viewModel.onTapButton()
