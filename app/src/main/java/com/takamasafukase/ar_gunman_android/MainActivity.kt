@@ -1,6 +1,5 @@
 package com.takamasafukase.ar_gunman_android
 
-import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -37,6 +36,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val audioManager = AudioManager(context = application)
+        val topViewModel = TopViewModel(audioManager = audioManager)
+        val resultViewModel = ResultViewModel(app = application, audioManager)
 
         setContent {
             ARGunManAndroidTheme {
@@ -44,7 +45,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Transparent
                 ) {
-                    RootCompose(audioManager = audioManager)
+                    RootCompose(
+                        topViewModel = topViewModel,
+                        resultViewModel = resultViewModel,
+                    )
                 }
             }
         }
@@ -53,7 +57,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun RootCompose(
-    audioManager: AudioManager
+    topViewModel: TopViewModel,
+    resultViewModel: ResultViewModel,
 ) {
     val navController = rememberNavController()
     val context = LocalContext.current
@@ -64,9 +69,8 @@ fun RootCompose(
         startDestination = "top",
     ) {
         composable("top") {
-            val viewModel = TopViewModel(audioManager = audioManager)
             TopScreen(
-                viewModel = viewModel,
+                viewModel = topViewModel,
                 toSetting = {
                     navController.navigate("setting")
                 },
@@ -101,10 +105,7 @@ fun RootCompose(
         ) {
             val totalScore = it.arguments?.getString("totalScore") ?: "0.0"
             ResultScreen(
-                viewModel = ResultViewModel(
-                    app = Application(),
-                    audioManager = audioManager,
-                ),
+                viewModel = resultViewModel,
                 totalScore = totalScore.toDouble(),
                 onReplay = {
                     navController.navigate("game")
