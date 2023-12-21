@@ -42,4 +42,13 @@ class RankingRepository {
 //            )
         }, 1000)
     }
+
+    fun registerDummyNewRanking(
+        ranking: Ranking,
+        onCompleted: () -> Unit,
+    ) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            onCompleted()
+        }, 500)
+    }
 }
