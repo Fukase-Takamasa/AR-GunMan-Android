@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -25,7 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,17 +42,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.entity.Ranking
+import com.takamasafukase.ar_gunman_android.repository.RankingRepository
+import com.takamasafukase.ar_gunman_android.viewModel.NameRegisterViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @Composable
 fun NameRegisterScreen(
-    totalScore: Double,
+    viewModel: NameRegisterViewModel,
     onClose: () -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
-    val rememberCoroutineScope = rememberCoroutineScope()
-    var textState by remember { mutableStateOf("") }
+    val state = viewModel.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.closeDialogEvent.collect {
+            onClose()
+        }
+    }
 
     CustomDialog(
         onDismissRequest = onClose,
@@ -95,7 +106,7 @@ fun NameRegisterScreen(
                             fontWeight = FontWeight.Bold,
                         )
                         Text(
-                            text = "YOU'RE RANKED AT 12 / 105 IN",
+                            text = "YOU'RE RANKED AT ${state.value.rankText} IN",
                             color = colorResource(id = R.color.paper),
                             fontSize = (screenHeight * 0.046).sp,
                         )
@@ -105,7 +116,7 @@ fun NameRegisterScreen(
                             fontSize = (screenHeight * 0.046).sp,
                         )
                         Text(
-                            text = "SCORE: $totalScore",
+                            text = "SCORE: ${state.value.totalScore}",
                             color = colorResource(id = R.color.paper),
                             fontSize = (screenHeight * 0.074).sp,
                             fontWeight = FontWeight.Black,
@@ -121,9 +132,9 @@ fun NameRegisterScreen(
                                 fontSize = (screenHeight * 0.046).sp,
                             )
                             TextField(
-                                value = textState,
+                                value = state.value.nameInputText,
                                 onValueChange = {
-                                    textState = it
+                                    viewModel.onChangeNameText(it)
                                 },
                                 colors = TextFieldDefaults.textFieldColors(
                                     textColor = colorResource(id = R.color.paper),
@@ -136,10 +147,10 @@ fun NameRegisterScreen(
                                 shape = RoundedCornerShape(12),
                                 singleLine = true,
                                 trailingIcon = {
-                                    if (textState.isNotEmpty()) {
+                                    if (state.value.nameInputText.isNotEmpty()) {
                                         IconButton(
                                             onClick = {
-                                                textState = ""
+                                                viewModel.onChangeNameText("")
                                             }
                                         ) {
                                             Icon(
@@ -169,7 +180,9 @@ fun NameRegisterScreen(
                             TextButton(
                                 onClick = {
                                     onClose()
-                                }
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
                             ) {
                                 Text(
                                     text = "NO, THANKS",
@@ -189,28 +202,39 @@ fun NameRegisterScreen(
                             )
                             TextButton(
                                 onClick = {
-                                    rememberCoroutineScope.launch {
-                                        // TODO: Firestoreに名前とスコアの登録。それが終わったらonClose()
-                                        onClose()
-                                    }
+                                    viewModel.onTapRegisterButton()
                                 },
                                 modifier = Modifier
                                     .fillMaxHeight()
+                                    .weight(1f)
                             ) {
-                                val buttonColor = if (textState.isEmpty())
+                                val buttonColor = if (state.value.nameInputText.isEmpty())
                                     Color.LightGray
                                 else
                                     colorResource(id = R.color.blackSteel)
-                                Text(
-                                    text = "REGISTER!",
-                                    color = buttonColor,
-                                    fontSize = (screenHeight * 0.064).sp,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center,
-                                    modifier = Modifier
-                                        .wrapContentSize(align = Alignment.Center, unbounded = true)
-                                        .padding(bottom = 4.dp)
-                                )
+
+                                if (state.value.isShowLoadingOnRegisterButton) {
+                                    CircularProgressIndicator(
+                                        color = colorResource(id = R.color.paper),
+                                        modifier = Modifier
+                                            .padding(bottom = 4.dp)
+                                            .size(28.dp)
+                                    )
+                                }else {
+                                    Text(
+                                        text = "REGISTER!",
+                                        color = buttonColor,
+                                        fontSize = (screenHeight * 0.064).sp,
+                                        fontWeight = FontWeight.Bold,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier
+                                            .wrapContentSize(
+                                                align = Alignment.Center,
+                                                unbounded = true
+                                            )
+                                            .padding(bottom = 4.dp)
+                                    )
+                                }
                             }
                         }
                     }
@@ -224,7 +248,15 @@ fun NameRegisterScreen(
 @Composable
 fun NameRegisterScreenPreview() {
     NameRegisterScreen(
-        totalScore = 78.753,
+        viewModel = NameRegisterViewModel(
+            rankingRepository = RankingRepository(),
+            params = NameRegisterViewModel.Params(
+                totalScore = 98.765,
+                rankingListFlow = MutableStateFlow(
+                    listOf()
+                )
+            )
+        ),
         onClose = {},
     )
 }
