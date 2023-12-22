@@ -83,8 +83,9 @@ class NameRegisterViewModel(
     private fun getTemporaryRank(params: Params): Int {
         // スコアの高い順になっているリストの中から最初にtotalScoreよりも小さいランクのindex番号を取得
         // それがちょうど最終的に今回のtotalScoreを挿入した場合のランク（1始まり）になる
-        return params.rankingListFlow.value.indexOfFirst {
-            it.score < params.totalScore
+        val temporaryRank = params.rankingListFlow.value.indexOfFirst {
+            it.score <= params.totalScore
         }
+        return temporaryRank + 1
     }
 }
