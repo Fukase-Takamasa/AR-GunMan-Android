@@ -72,20 +72,9 @@ fun ResultScreen(
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state by viewModel.state.collectAsState()
-    val rankingListStateFlow = MutableStateFlow<List<Ranking>>(value = listOf())
 
     LaunchedEffect(Unit) {
         viewModel.onViewDidAppear()
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.state
-            .map { MutableStateFlow(it.rankings) }
-            .filter { it.value.isNotEmpty() }
-            .collect {
-                DebugLogUtil.print("ResultView rankingListStateFlowに値を流します: ${it.value}")
-                rankingListStateFlow.emit(it.value)
-            }
     }
 
     Surface(
@@ -195,7 +184,7 @@ fun ResultScreen(
                     rankingRepository = RankingRepository(),
                     params = NameRegisterViewModel.Params(
                         totalScore = totalScore,
-                        rankingListFlow = rankingListStateFlow
+                        rankingListFlow = viewModel.rankingListEvent
                     )
                 ),
                 onClose = {

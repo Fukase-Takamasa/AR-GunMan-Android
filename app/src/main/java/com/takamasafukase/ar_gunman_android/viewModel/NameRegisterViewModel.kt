@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 data class NameRegisterViewState(
@@ -40,12 +41,13 @@ class NameRegisterViewModel(
 
     init {
         viewModelScope.launch {
-            params.rankingListFlow.collect {
-                DebugLogUtil.print("NameVM rankingListFlow.collect: $it")
-                _state.value = _state.value.copy(
-                    rankText = createTemporaryRankText(params)
-                )
-            }
+            params.rankingListFlow
+                .filter { it.isNotEmpty() }
+                .collect {
+                    _state.value = _state.value.copy(
+                        rankText = createTemporaryRankText(params)
+                    )
+                }
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
@@ -12,6 +13,9 @@ import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 data class ResultViewState(
     val rankings: List<Ranking>,
@@ -32,9 +36,19 @@ class ResultViewModel(
     )
     val state = _state.asStateFlow()
     private val rankingRepository = RankingRepository()
+    private val rankingListFlow = MutableStateFlow<List<Ranking>>(value = listOf())
+    val rankingListEvent = rankingListFlow.asStateFlow()
 
     init {
         getRankings()
+
+        viewModelScope.launch {
+            _state
+                .map { it.rankings }
+                .collect {
+                    rankingListFlow.value = it
+                }
+        }
     }
 
     fun onViewDidAppear() {
