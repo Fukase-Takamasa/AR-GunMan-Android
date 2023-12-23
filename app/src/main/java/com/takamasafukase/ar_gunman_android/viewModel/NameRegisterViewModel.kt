@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
+import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,7 @@ data class NameRegisterViewState(
 
 class NameRegisterViewModel(
     private val rankingRepository: RankingRepository,
+    private val rankingUtil: RankingUtil,
     private val params: Params,
 ): ViewModel() {
     data class Params(
@@ -45,7 +47,10 @@ class NameRegisterViewModel(
                 .filter { it.isNotEmpty() }
                 .collect {
                     _state.value = _state.value.copy(
-                        rankText = createTemporaryRankText(params)
+                        rankText = rankingUtil.createTemporaryRankText(
+                            rankingList = params.rankingListFlow.value,
+                            score = params.totalScore,
+                        )
                     )
                 }
         }
@@ -77,20 +82,5 @@ class NameRegisterViewModel(
                 }
             }
         )
-    }
-
-    // 何位中/何位の表示テキストを作成
-    private fun createTemporaryRankText(params: Params): String {
-        return "${getTemporaryRank(params)} / ${params.rankingListFlow.value.size}"
-    }
-
-    // 取得したランキング順位の中から今回のスコア（まだ未登録）を差し込むと暫定何位になるかを計算して返却
-    private fun getTemporaryRank(params: Params): Int {
-        // スコアの高い順になっているリストの中から最初にtotalScoreよりも小さいランクのindex番号を取得
-        // それがちょうど最終的に今回のtotalScoreを挿入した場合のランク（1始まり）になる
-        val temporaryRank = params.rankingListFlow.value.indexOfFirst {
-            it.score <= params.totalScore
-        }
-        return temporaryRank + 1
     }
 }

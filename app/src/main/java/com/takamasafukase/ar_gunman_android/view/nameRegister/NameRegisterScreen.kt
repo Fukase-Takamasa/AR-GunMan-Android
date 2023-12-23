@@ -44,6 +44,7 @@ import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
+import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import com.takamasafukase.ar_gunman_android.viewModel.NameRegisterViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -250,6 +251,7 @@ fun NameRegisterScreenPreview() {
     NameRegisterScreen(
         viewModel = NameRegisterViewModel(
             rankingRepository = RankingRepository(),
+            rankingUtil = RankingUtil(),
             params = NameRegisterViewModel.Params(
                 totalScore = 98.765,
                 rankingListFlow = MutableStateFlow(

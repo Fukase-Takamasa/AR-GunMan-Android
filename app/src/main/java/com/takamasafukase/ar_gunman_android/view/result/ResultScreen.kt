@@ -51,6 +51,7 @@ import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
+import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import com.takamasafukase.ar_gunman_android.view.nameRegister.NameRegisterScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.NameRegisterViewModel
@@ -182,13 +183,14 @@ fun ResultScreen(
             NameRegisterScreen(
                 viewModel = NameRegisterViewModel(
                     rankingRepository = RankingRepository(),
+                    rankingUtil = RankingUtil(),
                     params = NameRegisterViewModel.Params(
                         totalScore = totalScore,
                         rankingListFlow = viewModel.rankingListEvent
                     )
                 ),
-                onClose = {
-                    viewModel.onCloseNameRegisterDialog()
+                onClose = { registeredRanking ->
+                    viewModel.onCloseNameRegisterDialog(registeredRanking)
                 }
             )
         }
@@ -346,7 +348,8 @@ fun ResultScreenPreview() {
     ResultScreen(
         viewModel = ResultViewModel(
             app = Application(),
-            audioManager = AudioManager(Application())
+            audioManager = AudioManager(Application()),
+            rankingUtil = RankingUtil(),
         ),
         totalScore = 87.654,
         onReplay = {},

@@ -11,6 +11,7 @@ import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
+import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -26,6 +27,7 @@ data class ResultViewState(
 class ResultViewModel(
     app: Application,
     private val audioManager: AudioManager,
+    private val rankingUtil: RankingUtil,
 ) : AndroidViewModel(app) {
     private val _state = MutableStateFlow(
         ResultViewState(

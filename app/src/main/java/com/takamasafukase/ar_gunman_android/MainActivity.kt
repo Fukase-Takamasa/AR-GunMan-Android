@@ -26,6 +26,7 @@ import com.takamasafukase.ar_gunman_android.view.game.GameActivity
 import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
 import com.takamasafukase.ar_gunman_android.ui.theme.ARGunManAndroidTheme
 import com.takamasafukase.ar_gunman_android.utility.ErrorAlertDialog
+import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import com.takamasafukase.ar_gunman_android.view.result.ResultScreen
 import com.takamasafukase.ar_gunman_android.view.setting.SettingScreen
 import com.takamasafukase.ar_gunman_android.view.top.TopScreen
@@ -38,7 +39,11 @@ class MainActivity : ComponentActivity() {
 
         val audioManager = AudioManager(context = application)
         val topViewModel = TopViewModel(audioManager = audioManager)
-        val resultViewModel = ResultViewModel(app = application, audioManager)
+        val resultViewModel = ResultViewModel(
+            app = application,
+            audioManager = audioManager,
+            rankingUtil = RankingUtil(),
+        )
         val settingViewModel = SettingViewModel()
 
         setContent {
