@@ -30,7 +30,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,22 +45,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
-import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.model.WeaponType
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
-import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
 import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import com.takamasafukase.ar_gunman_android.view.nameRegister.NameRegisterScreen
 import com.takamasafukase.ar_gunman_android.view.ranking.RankingListView
 import com.takamasafukase.ar_gunman_android.viewModel.NameRegisterViewModel
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
-import com.takamasafukase.ar_gunman_android.viewModel.TopViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 
 @Composable
 fun ResultScreen(
@@ -122,6 +113,7 @@ fun ResultScreen(
                             RankingListView(
                                 list = state.rankings,
                                 listState = viewModel.lazyListState,
+                                highlightedIndex = state.rankingListHighlightedIndex,
                             )
                         }
                     }

@@ -1,23 +1,38 @@
 package com.takamasafukase.ar_gunman_android.view.ranking
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
+import kotlinx.coroutines.delay
 
 @Composable
-fun RankingItem(rankIndex: Int, ranking: Ranking) {
+fun RankingItem(
+    rankIndex: Int,
+    ranking: Ranking,
+    isHighlighted: Boolean = false,
+) {
     Box(
         // ベースとなる領域を確保
         modifier = Modifier
@@ -48,6 +63,10 @@ fun RankingItem(rankIndex: Int, ranking: Ranking) {
                 .padding(horizontal = 30.dp, vertical = 10.dp)
                 .background(colorResource(id = R.color.customBrown2))
         )
+        // ハイライト時に表示
+        if (isHighlighted) {
+            AnimatedAlphaView()
+        }
         Row(
             verticalAlignment = Alignment.Bottom
         ) {
@@ -125,4 +144,35 @@ fun whiteCornerSquares() {
                 )
         )
     }
+}
+
+@Composable
+fun AnimatedAlphaView() {
+    var startAnimation by remember { mutableStateOf(false) }
+    val animatedAlpha by animateFloatAsState(
+        targetValue = if (startAnimation) 0.7f else 0f,
+        animationSpec = tween(durationMillis = 800),
+        label = "",
+    )
+
+    LaunchedEffect(Unit) {
+        startAnimation = true
+        delay(800)
+        startAnimation = false
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp, vertical = 2.dp)
+            .alpha(animatedAlpha)
+            .background(colorResource(id = R.color.goldLeaf))
+    )
+}
+
+@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@Composable
+fun RankingItemPreview() {
+    val dummyRanking = Ranking(score = 98.765, user_name = "ウルトラ深瀬")
+    RankingItem(rankIndex = 1, ranking = dummyRanking)
 }

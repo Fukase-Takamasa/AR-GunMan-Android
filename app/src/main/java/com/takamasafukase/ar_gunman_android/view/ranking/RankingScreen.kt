@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -147,6 +149,7 @@ fun BackgroundBorderView() {
 fun RankingListView(
     list: List<Ranking>,
     listState: LazyListState,
+    highlightedIndex: Int? = null,
 ) {
     LazyColumn(
         state = listState,
@@ -157,8 +160,22 @@ fun RankingListView(
             }
             RankingItem(
                 rankIndex = index + 1,
-                ranking = ranking
+                ranking = ranking,
+                isHighlighted = (index == highlightedIndex)
             )
         }
     }
+}
+
+@Preview(device = Devices.AUTOMOTIVE_1024p, widthDp = 720, heightDp = 360)
+@Composable
+fun RankingListViewPreview() {
+    val dummyRankingList = (1..15).map {
+        Ranking(score = 98.765, user_name = "ウルトラ深瀬")
+    }
+    RankingListView(
+        list = dummyRankingList,
+        listState = LazyListState(),
+        highlightedIndex = 2,
+    )
 }

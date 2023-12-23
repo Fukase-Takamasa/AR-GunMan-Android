@@ -13,10 +13,8 @@ import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import com.takamasafukase.ar_gunman_android.utility.RankingUtil
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -24,6 +22,7 @@ data class ResultViewState(
     val rankings: List<Ranking>,
     val isShowNameRegisterDialog: Boolean,
     val isShowButtons: Boolean,
+    val rankingListHighlightedIndex: Int?,
 )
 
 class ResultViewModel(
@@ -36,6 +35,7 @@ class ResultViewModel(
             rankings = listOf(),
             isShowNameRegisterDialog = false,
             isShowButtons = false,
+            rankingListHighlightedIndex = null,
         )
     )
     val state = _state.asStateFlow()
@@ -43,6 +43,7 @@ class ResultViewModel(
     private val rankingListFlow = MutableStateFlow<List<Ranking>>(value = listOf())
     val rankingListEvent = rankingListFlow.asStateFlow()
     val lazyListState = LazyListState()
+    val registeredRanking: Ranking? = null
 
     init {
         getRankings()
@@ -84,7 +85,10 @@ class ResultViewModel(
 
             //  そのデータを該当順位の位置に挿入してデータを流してリストを更新
             newRankingList.add(rankIndex, registeredRanking)
-            _state.value = _state.value.copy(rankings = newRankingList)
+            _state.value = _state.value.copy(
+                rankings = newRankingList,
+                rankingListHighlightedIndex = rankIndex,
+            )
 
             //  該当データがリストの1番上にくる位置にスクロールさせる
             viewModelScope.launch {
