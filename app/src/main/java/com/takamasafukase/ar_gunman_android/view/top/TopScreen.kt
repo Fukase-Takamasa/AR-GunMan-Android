@@ -182,7 +182,7 @@ fun CustomIconButton(
         }) {
             Text(
                 text = title,
-                fontSize = (screenHeight * 0.12).sp, // iOSだと固定で50
+                fontSize = (screenHeight * 0.10).sp, // iOSだと固定で50
                 fontWeight = FontWeight.Bold,
                 style = TextStyle(textDecoration = TextDecoration.Underline),
                 color = colorResource(id = R.color.blackSteel)
