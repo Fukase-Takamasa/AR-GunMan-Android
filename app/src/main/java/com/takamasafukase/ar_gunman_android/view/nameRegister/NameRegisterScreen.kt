@@ -53,20 +53,22 @@ import kotlinx.coroutines.launch
 @Composable
 fun NameRegisterScreen(
     viewModel: NameRegisterViewModel,
-    onClose: () -> Unit,
+    onClose: (registeredRanking: Ranking?) -> Unit,
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp
     val screenHeight = LocalConfiguration.current.screenHeightDp
     val state = viewModel.state.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.closeDialogEvent.collect {
-            onClose()
+        viewModel.closeDialogEvent.collect { registeredRanking ->
+            onClose(registeredRanking)
         }
     }
 
     CustomDialog(
-        onDismissRequest = onClose,
+        onDismissRequest = {
+            onClose(null)
+        },
         size = DpSize(
             width = (screenWidth * 0.54).dp,
             height = (screenHeight * 0.64).dp,
@@ -180,7 +182,7 @@ fun NameRegisterScreen(
                         ) {
                             TextButton(
                                 onClick = {
-                                    onClose()
+                                    viewModel.onTapNoThanksButton()
                                 },
                                 modifier = Modifier
                                     .weight(1f)

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -12,6 +13,7 @@ import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.manager.AudioManager
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import com.takamasafukase.ar_gunman_android.utility.RankingUtil
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
@@ -40,6 +42,7 @@ class ResultViewModel(
     private val rankingRepository = RankingRepository()
     private val rankingListFlow = MutableStateFlow<List<Ranking>>(value = listOf())
     val rankingListEvent = rankingListFlow.asStateFlow()
+    val lazyListState = LazyListState()
 
     init {
         getRankings()
@@ -63,13 +66,34 @@ class ResultViewModel(
         }, 500)
     }
 
-    fun onCloseNameRegisterDialog() {
+    fun onCloseNameRegisterDialog(registeredRanking: Ranking?) {
         _state.value = _state.value.copy(isShowNameRegisterDialog = false)
 
         Handler(Looper.getMainLooper()).postDelayed({
             // 0.1秒後にボタンの出現アニメーションを開始させる
             _state.value = _state.value.copy(isShowButtons = true)
         }, 100)
+
+        // 受け取ったランキングデータがnullじゃ無い場合（ユーザーが登録をした）の処理
+        if (registeredRanking != null) {
+            var newRankingList = _state.value.rankings.toMutableList()
+            val rankIndex = rankingUtil.getTemporaryRankIndex(
+                rankingList = newRankingList,
+                score = registeredRanking.score,
+            )
+
+            //  そのデータを該当順位の位置に挿入してデータを流してリストを更新
+            newRankingList.add(rankIndex, registeredRanking)
+            _state.value = _state.value.copy(rankings = newRankingList)
+
+            //  該当データがリストの1番上にくる位置にスクロールさせる
+            viewModelScope.launch {
+                lazyListState.scrollToItem(
+                    index = rankIndex,
+                    scrollOffset = -18,
+                )
+            }
+        }
     }
 
     private fun getRankings() {

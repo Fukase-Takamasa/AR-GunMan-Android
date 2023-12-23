@@ -38,7 +38,7 @@ class NameRegisterViewModel(
         isShowLoadingOnRegisterButton = false,
     ))
     val state = _state.asStateFlow()
-    private val closeDialogFlow = MutableSharedFlow<Unit>()
+    private val closeDialogFlow = MutableSharedFlow<Ranking?>()
     val closeDialogEvent = closeDialogFlow.asSharedFlow()
 
     init {
@@ -60,6 +60,12 @@ class NameRegisterViewModel(
         _state.value = _state.value.copy(nameInputText = text)
     }
 
+    fun onTapNoThanksButton() {
+        viewModelScope.launch {
+            closeDialogFlow.emit(null)
+        }
+    }
+
     fun onTapRegisterButton() {
         // ボタン上にインジケータ表示
         _state.value = _state.value.copy(
@@ -76,9 +82,9 @@ class NameRegisterViewModel(
         rankingRepository.registerRanking(
             ranking = newRanking,
             onCompleted = {
-                // ダイアログを閉じる指示を流す
+                // 今回登録したランキングデータと一緒にダイアログを閉じる指示を流す
                 viewModelScope.launch {
-                    closeDialogFlow.emit(Unit)
+                    closeDialogFlow.emit(newRanking)
                 }
             }
         )

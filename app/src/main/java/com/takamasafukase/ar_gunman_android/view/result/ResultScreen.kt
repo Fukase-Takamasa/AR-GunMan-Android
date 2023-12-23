@@ -119,7 +119,10 @@ fun ResultScreen(
                         if (state.rankings.isEmpty()) {
                             CircularProgressIndicator(color = colorResource(id = R.color.paper))
                         } else {
-                            RankingListView(list = state.rankings)
+                            RankingListView(
+                                list = state.rankings,
+                                listState = viewModel.lazyListState,
+                            )
                         }
                     }
                 }

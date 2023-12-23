@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -74,7 +75,10 @@ fun RankingScreen(viewModel: RankingViewModel, onClose: () -> Unit) {
                                 if (state.rankings.isEmpty()) {
                                     CircularProgressIndicator(color = colorResource(id = R.color.paper))
                                 } else {
-                                    RankingListView(list = state.rankings)
+                                    RankingListView(
+                                        list = state.rankings,
+                                        listState = LazyListState(),
+                                    )
                                 }
                             }
                         }
@@ -140,8 +144,13 @@ fun BackgroundBorderView() {
 
 // リストビューの部分
 @Composable
-fun RankingListView(list: List<Ranking>) {
-    LazyColumn {
+fun RankingListView(
+    list: List<Ranking>,
+    listState: LazyListState,
+) {
+    LazyColumn(
+        state = listState,
+    ) {
         itemsIndexed(list) { index, ranking ->
             if (index == 0) {
                 Spacer(modifier = Modifier.height(10.dp))
