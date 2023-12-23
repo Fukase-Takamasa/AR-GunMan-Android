@@ -76,7 +76,7 @@ class ResultViewModel(
 
         // 受け取ったランキングデータがnullじゃ無い場合（ユーザーが登録をした）の処理
         if (registeredRanking != null) {
-            var newRankingList = _state.value.rankings.toMutableList()
+            val newRankingList = _state.value.rankings.toMutableList()
             val rankIndex = rankingUtil.getTemporaryRankIndex(
                 rankingList = newRankingList,
                 score = registeredRanking.score,
@@ -106,7 +106,7 @@ class ResultViewModel(
                 val intent = Intent("ERROR_EVENT")
                 intent.putExtra("errorMessage", it.message)
                 LocalBroadcastManager
-                    .getInstance(getApplication<Application>())
+                    .getInstance(getApplication())
                     .sendBroadcast(intent)
             }
         )

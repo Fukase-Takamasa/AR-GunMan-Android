@@ -185,6 +185,7 @@ fun ResultScreen(
         if (state.isShowNameRegisterDialog) {
             NameRegisterScreen(
                 viewModel = NameRegisterViewModel(
+                    app = Application(),
                     rankingRepository = RankingRepository(),
                     rankingUtil = RankingUtil(),
                     params = NameRegisterViewModel.Params(

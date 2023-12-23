@@ -1,5 +1,6 @@
 package com.takamasafukase.ar_gunman_android.view.nameRegister
 
+import android.app.Application
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -252,6 +253,7 @@ fun NameRegisterScreen(
 fun NameRegisterScreenPreview() {
     NameRegisterScreen(
         viewModel = NameRegisterViewModel(
+            app = Application(),
             rankingRepository = RankingRepository(),
             rankingUtil = RankingUtil(),
             params = NameRegisterViewModel.Params(

@@ -1,7 +1,11 @@
 package com.takamasafukase.ar_gunman_android.viewModel
 
+import android.app.Application
+import android.content.Intent
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
 import com.takamasafukase.ar_gunman_android.utility.DebugLogUtil
@@ -22,10 +26,11 @@ data class NameRegisterViewState(
 )
 
 class NameRegisterViewModel(
+    app: Application,
     private val rankingRepository: RankingRepository,
     private val rankingUtil: RankingUtil,
     private val params: Params,
-): ViewModel() {
+) : AndroidViewModel(app) {
     data class Params(
         val totalScore: Double,
         val rankingListFlow: StateFlow<List<Ranking>>,
@@ -86,6 +91,14 @@ class NameRegisterViewModel(
                 viewModelScope.launch {
                     closeDialogFlow.emit(newRanking)
                 }
+            },
+            onError = {
+                // Broadcastでエラーを通知して最上階層でアラートダイアログ表示させる
+                val intent = Intent("ERROR_EVENT")
+                intent.putExtra("errorMessage", it.message)
+                LocalBroadcastManager
+                    .getInstance(getApplication())
+                    .sendBroadcast(intent)
             }
         )
     }

@@ -46,17 +46,23 @@ class RankingRepository {
     fun registerRanking(
         ranking: Ranking,
         onCompleted: () -> Unit,
+        onError: (Exception) -> Unit
     ) {
        db.collection("worldRanking")
            .add(ranking)
            .addOnSuccessListener {
                onCompleted()
            }
+           .addOnFailureListener { error ->
+               Log.d("Android", "ログAndroid: getRankings error: $error")
+               onError(error)
+           }
     }
 
     fun registerDummyNewRanking(
         ranking: Ranking,
         onCompleted: () -> Unit,
+        onError: (Exception) -> Unit
     ) {
         Handler(Looper.getMainLooper()).postDelayed({
             onCompleted()
