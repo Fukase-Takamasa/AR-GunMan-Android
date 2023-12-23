@@ -90,7 +90,7 @@ class ResultViewModel(
             viewModelScope.launch {
                 lazyListState.scrollToItem(
                     index = rankIndex,
-                    scrollOffset = -18,
+                    scrollOffset = -24,
                 )
             }
         }
