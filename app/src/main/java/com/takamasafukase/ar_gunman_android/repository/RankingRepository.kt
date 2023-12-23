@@ -43,6 +43,17 @@ class RankingRepository {
         }, 1000)
     }
 
+    fun registerRanking(
+        ranking: Ranking,
+        onCompleted: () -> Unit,
+    ) {
+       db.collection("worldRanking")
+           .add(ranking)
+           .addOnSuccessListener {
+               onCompleted()
+           }
+    }
+
     fun registerDummyNewRanking(
         ranking: Ranking,
         onCompleted: () -> Unit,

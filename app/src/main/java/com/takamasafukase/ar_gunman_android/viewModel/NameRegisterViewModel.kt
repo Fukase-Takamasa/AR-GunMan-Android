@@ -61,12 +61,15 @@ class NameRegisterViewModel(
             isShowLoadingOnRegisterButton = true
         )
 
+        // 入力された名前とスコアで新しいランキングを作成
+        val newRanking = Ranking(
+            user_name = _state.value.nameInputText,
+            score = params.totalScore,
+        )
+
         // 登録POST
-        rankingRepository.registerDummyNewRanking(
-            ranking = Ranking(
-                user_name = _state.value.nameInputText,
-                score = params.totalScore,
-            ),
+        rankingRepository.registerRanking(
+            ranking = newRanking,
             onCompleted = {
                 // ダイアログを閉じる指示を流す
                 viewModelScope.launch {
