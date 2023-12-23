@@ -22,18 +22,18 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -45,11 +45,10 @@ import com.takamasafukase.ar_gunman_android.utility.CustomDialog
 import com.takamasafukase.ar_gunman_android.R
 import com.takamasafukase.ar_gunman_android.entity.Ranking
 import com.takamasafukase.ar_gunman_android.repository.RankingRepository
+import com.takamasafukase.ar_gunman_android.utility.CustomTextField
 import com.takamasafukase.ar_gunman_android.utility.RankingUtil
 import com.takamasafukase.ar_gunman_android.viewModel.NameRegisterViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 @Composable
 fun NameRegisterScreen(
@@ -135,7 +134,7 @@ fun NameRegisterScreen(
                                 color = colorResource(id = R.color.paper),
                                 fontSize = (screenHeight * 0.046).sp,
                             )
-                            TextField(
+                            CustomTextField(
                                 value = state.value.nameInputText,
                                 onValueChange = {
                                     viewModel.onChangeNameText(it)
@@ -147,6 +146,10 @@ fun NameRegisterScreen(
                                     focusedIndicatorColor = Color.Transparent,
                                     unfocusedIndicatorColor = Color.Transparent,
                                     disabledIndicatorColor = Color.Transparent,
+                                ),
+                                cursorBrush = SolidColor(colorResource(id = R.color.paper)),
+                                textStyle = TextStyle(
+                                    color = colorResource(id = R.color.paper)
                                 ),
                                 shape = RoundedCornerShape(12),
                                 singleLine = true,
@@ -165,8 +168,9 @@ fun NameRegisterScreen(
                                     }
                                 },
                                 modifier = Modifier
+                                    .fillMaxWidth()
                                     .height(40.dp)
-                                    .padding(start = 8.dp)
+                                    .padding(start = 8.dp),
                             )
                         }
                         Spacer(
