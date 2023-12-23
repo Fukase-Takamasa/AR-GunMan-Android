@@ -80,21 +80,21 @@ fun NameRegisterScreen(
                     .border(
                         width = 2.dp,
                         color = colorResource(id = R.color.paper),
-                        shape = RoundedCornerShape(6)
+                        shape = RoundedCornerShape(2)
                     )
             ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(all = 4.dp)
+                        .padding(all = 5.2.dp)
                         .background(
                             color = colorResource(id = R.color.goldLeaf),
-                            shape = RoundedCornerShape(5)
+                            shape = RoundedCornerShape(2)
                         )
                         .border(
                             width = 1.dp,
                             color = colorResource(id = R.color.paper),
-                            shape = RoundedCornerShape(5)
+                            shape = RoundedCornerShape(2)
                         )
                 ) {
                     Column(
@@ -108,11 +108,25 @@ fun NameRegisterScreen(
                             fontSize = (screenHeight * 0.058).sp,
                             fontWeight = FontWeight.Bold,
                         )
-                        Text(
-                            text = "YOU'RE RANKED AT ${state.value.rankText} IN",
-                            color = colorResource(id = R.color.paper),
-                            fontSize = (screenHeight * 0.046).sp,
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "YOU'RE RANKED AT",
+                                color = colorResource(id = R.color.paper),
+                                fontSize = (screenHeight * 0.046).sp,
+                            )
+                            Text(
+                                text = " ${state.value.rankText} ",
+                                color = colorResource(id = R.color.customBrown1),
+                                fontSize = (screenHeight * 0.058).sp,
+                            )
+                            Text(
+                                text = "IN",
+                                color = colorResource(id = R.color.paper),
+                                fontSize = (screenHeight * 0.046).sp,
+                            )
+                        }
                         Text(
                             text = "THE WORLD!",
                             color = colorResource(id = R.color.paper),
