@@ -81,7 +81,7 @@ fun NameRegisterScreen(
                     .border(
                         width = 2.dp,
                         color = colorResource(id = R.color.paper),
-                        shape = RoundedCornerShape(5)
+                        shape = RoundedCornerShape(6)
                     )
             ) {
                 Box(
