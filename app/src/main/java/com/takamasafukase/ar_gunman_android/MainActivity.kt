@@ -14,6 +14,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavType
 import androidx.navigation.activity
@@ -32,6 +35,8 @@ import com.takamasafukase.ar_gunman_android.view.setting.SettingScreen
 import com.takamasafukase.ar_gunman_android.view.top.TopScreen
 import com.takamasafukase.ar_gunman_android.viewModel.ResultViewModel
 import com.takamasafukase.ar_gunman_android.viewModel.SettingViewModel
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_setting_preferences")
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
