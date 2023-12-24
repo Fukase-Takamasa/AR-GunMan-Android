@@ -133,7 +133,7 @@ fun NameRegisterScreen(
                             fontSize = (screenHeight * 0.046).sp,
                         )
                         Text(
-                            text = "SCORE: ${state.value.totalScore}",
+                            text = "SCORE: ${"%.3f".format(state.value.totalScore)}",
                             color = colorResource(id = R.color.paper),
                             fontSize = (screenHeight * 0.074).sp,
                             fontWeight = FontWeight.Black,

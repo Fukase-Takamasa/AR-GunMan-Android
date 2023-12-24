@@ -84,7 +84,7 @@ fun RankingItem(
             )
             // スコア
             Text(
-                text = ranking.score.toString(),
+                text = "%.3f".format(ranking.score),
                 color = colorResource(id = R.color.paper),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Normal,

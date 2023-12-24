@@ -43,7 +43,6 @@ class ResultViewModel(
     private val rankingListFlow = MutableStateFlow<List<Ranking>>(value = listOf())
     val rankingListEvent = rankingListFlow.asStateFlow()
     val lazyListState = LazyListState()
-    val registeredRanking: Ranking? = null
 
     init {
         getRankings()
