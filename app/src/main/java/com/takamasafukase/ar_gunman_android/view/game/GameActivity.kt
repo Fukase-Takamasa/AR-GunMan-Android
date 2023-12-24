@@ -14,6 +14,7 @@ import com.takamasafukase.ar_gunman_android.manager.CurrentWeapon
 import com.takamasafukase.ar_gunman_android.manager.ScoreCounter
 import com.takamasafukase.ar_gunman_android.manager.TimeCounter
 import com.takamasafukase.ar_gunman_android.model.WeaponType
+import com.takamasafukase.ar_gunman_android.repository.TutorialPreferencesRepository
 import com.takamasafukase.ar_gunman_android.utility.ScoreCalculator
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
@@ -41,6 +42,7 @@ class GameActivity : ComponentActivity() {
                 GameScreen(
                     viewModel = GameViewModel(
                         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager,
+                        tutorialPreferencesRepository = TutorialPreferencesRepository(this@GameActivity),
                         audioManager = audioManager,
                         timeCounter = TimeCounter(
                             timeCountUtil = timeCountUtil

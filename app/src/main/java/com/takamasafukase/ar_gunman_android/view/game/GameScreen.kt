@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.takamasafukase.ar_gunman_android.R
+import com.takamasafukase.ar_gunman_android.view.tutorial.TutorialScreen
 import com.takamasafukase.ar_gunman_android.view.tutorial.WeaponChangeScreen
 import com.takamasafukase.ar_gunman_android.viewModel.GameViewModel
 
@@ -130,6 +131,15 @@ fun GameScreen(
                 )
             }
         }
+    }
+
+    // チュートリアルダイアログ
+    if (state.isShowTutorialDialog) {
+        TutorialScreen(
+            onClose = {
+                viewModel.onCloseTutorialDialog()
+            }
+        )
     }
 
     // 武器選択画面ダイアログ

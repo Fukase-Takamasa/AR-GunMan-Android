@@ -18,6 +18,7 @@ import com.takamasafukase.ar_gunman_android.UnityToAndroidMessenger
 import com.takamasafukase.ar_gunman_android.manager.CurrentWeapon
 import com.takamasafukase.ar_gunman_android.manager.ScoreCounter
 import com.takamasafukase.ar_gunman_android.manager.TimeCounter
+import com.takamasafukase.ar_gunman_android.repository.TutorialPreferencesRepository
 import com.takamasafukase.ar_gunman_android.utility.TimeCountUtil
 import com.unity3d.player.UnityPlayer
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,6 +45,7 @@ data class GameViewState(
 
 class GameViewModel(
     sensorManager: SensorManager,
+    private val tutorialPreferencesRepository: TutorialPreferencesRepository,
     private val audioManager: AudioManager,
     private val timeCounter: TimeCounter,
     private val timeCountUtil: TimeCountUtil,
@@ -68,6 +70,7 @@ class GameViewModel(
     val showResult = _showResult.asSharedFlow()
 
     private val onReceivedTargetHitEvent = MutableSharedFlow<Unit>()
+    private var isGameStarted = false
 
     init {
         showLoadingToHideUnityLogoSplash()
@@ -169,13 +172,30 @@ class GameViewModel(
     }
 
     fun onTapWeaponChangeButton() {
+        // ゲーム開始前の場合は弾く
+        if (!isGameStarted) return
+
         _state.value = _state.value.copy(isShowWeaponChangeDialog = true)
     }
 
     fun onCloseWeaponChangeDialog() {
+        // ダイアログを閉じる
         _state.value = _state.value.copy(isShowWeaponChangeDialog = false)
 
         // TODO: 武器が変更されずにただcloseやエッジスワイプで閉じられた時も含めて鳴らしたい
+    }
+
+    fun onCloseTutorialDialog() {
+        // ダイアログを閉じる
+        _state.value = _state.value.copy(isShowTutorialDialog = false)
+
+        viewModelScope.launch {
+            // ゲーム画面で既にチュートリアルを見たというフラグを保存する
+            tutorialPreferencesRepository.saveTutorialSeenStatus(true)
+        }
+
+        // チュートリアルを既に見ていた時の処理を行わせる
+        handleTutorialSeenStatus(true)
     }
 
     fun onSelectWeapon(selectedWeapon: WeaponType) {
@@ -217,34 +237,57 @@ class GameViewModel(
     }
 
     private fun checkTutorialSeenStatus() {
-        // TODO: Tutorialを見たかどうかをSharedPrefに保存＆確認して処理の分岐
+        viewModelScope.launch {
+            tutorialPreferencesRepository.getTutorialSeenStatus(
+                onData = { isAlreadySeen ->
+                    handleTutorialSeenStatus(isAlreadySeen)
+                }
+            )
+        }
+    }
 
-        // TODO: まだチュートリアルを見ていない時の処理　チュートリアルダイアログの表示
+    private fun handleTutorialSeenStatus(isAlreadySeen: Boolean) {
+        if (isAlreadySeen) {
+            // すでにチュートリアルを見終わっている時の処理
+            // デフォルトの武器を選択
+            onSelectWeapon(selectedWeapon = WeaponType.PISTOL)
 
-        // すでにチュートリアルを見終わっている時の処理
-        // デフォルトの武器を選択
-        onSelectWeapon(selectedWeapon = WeaponType.PISTOL)
+            // 1.5秒後にタイマーを開始
+            Handler(Looper.getMainLooper()).postDelayed({
+                // ゲーム開始フラグをtrueに変更
+                isGameStarted = true
 
-        // 1.5秒後にタイマーを開始
-        Handler(Looper.getMainLooper()).postDelayed({
-            // スタート音声を再生
-            audioManager.playSound(R.raw.start_whistle)
+                // スタート音声を再生
+                audioManager.playSound(R.raw.start_whistle)
 
-            // タイマーを開始
-            timeCounter.startTimer()
-        }, 1500)
+                // タイマーを開始
+                timeCounter.startTimer()
+            }, 1500)
+
+        }else {
+            // まだチュートリアルを見ていない時の処理
+            // チュートリアルダイアログの表示
+            _state.value = _state.value.copy(isShowTutorialDialog = true)
+        }
     }
 
     private fun handleMotionDetector(sensorManager: SensorManager) {
+        // TODO: MotionDetectorのイベントもFlowでリアクティブにして、isGameStartedでフィルタリングできる様にしたい
         motionDetector = MotionDetector(
             sensorManager = sensorManager,
             onDetectWeaponFiringMotion = {
-                // 現在の武器に発射処理を行わせる
-                currentWeapon.fire()
+                // ゲーム開始後のみ処理をする
+                if (isGameStarted) {
+                    // 現在の武器に発射処理を行わせる
+                    currentWeapon.fire()
+                }
             },
             onDetectWeaponReloadingMotion = {
-                // 現在の武器にリロード処理を行わせる
-                currentWeapon.reload()
+                // ゲーム開始後のみ処理をする
+                if (isGameStarted) {
+                    // 現在の武器にリロード処理を行わせる
+                    currentWeapon.reload()
+                }
             }
         )
     }
